@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubLife — サブスク ライフスタイル最適化</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5; color: #1a1a2e; min-height: 100vh; }
+
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  padding: 0 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 16px rgba(238,90,36,0.3);
+}
+.logo { font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
+.logo-tag { font-size: 11px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 10px; }
+.header-right { display: flex; gap: 10px; align-items: center; }
+.btn { padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.15s; }
+.btn-white { background: #fff; color: #ee5a24; }
+.btn-outline { background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
+.btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+/* ===== NAV TABS ===== */
+.nav-tabs { background: #fff; border-bottom: 1px solid #ffe0d5; display: flex; gap: 0; padding: 0 32px; overflow-x: auto; }
+.nav-tab { padding: 14px 20px; font-size: 13px; font-weight: 600; color: #aaa; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; }
+.nav-tab.active { color: #ee5a24; border-bottom-color: #ee5a24; }
+.nav-tab:hover:not(.active) { color: #666; }
+
+/* ===== MAIN ===== */
+.main { max-width: 1020px; margin: 0 auto; padding: 28px 20px; }
+
+/* ===== PAGES ===== */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ===== DASHBOARD ===== */
+.review-banner {
+  background: linear-gradient(135deg, #fff3f0, #ffe4d8);
+  border: 2px solid #ff6b6b50;
+  border-radius: 18px; padding: 18px 24px; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.banner-icon { font-size: 34px; }
+.banner-text h3 { font-size: 15px; font-weight: 800; color: #ee5a24; }
+.banner-text p { font-size: 12px; color: #888; margin-top: 4px; }
+.banner-btn { margin-left: auto; background: #ff6b6b; color: #fff; padding: 10px 22px; border-radius: 12px; border: none; font-size: 13px; font-weight: 800; cursor: pointer; }
+.banner-btn:hover { background: #ee5a24; }
+
+.summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.summary-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; }
+.sc-icon { font-size: 26px; margin-bottom: 8px; }
+.sc-val { font-size: 22px; font-weight: 900; }
+.sc-lbl { font-size: 11px; color: #888; margin-top: 4px; }
+.sc-sub { font-size: 12px; font-weight: 700; margin-top: 6px; }
+.c-orange { color: #ff6b6b; }
+.c-green  { color: #00b894; }
+.c-purple { color: #6c63ff; }
+.c-blue   { color: #0984e3; }
+
+.section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+.section-title::before { content: ''; width: 4px; height: 18px; background: #ff6b6b; border-radius: 2px; }
+.add-btn { padding: 6px 14px; background: #ff6b6b; color: #fff; border: none; border-radius: 16px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+.cat-card { background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden; }
+.cat-header { padding: 15px 20px; display: flex; align-items: center; gap: 10px; }
+.cat-emoji { font-size: 22px; }
+.cat-name { font-size: 14px; font-weight: 800; flex: 1; }
+.cat-total { font-size: 15px; font-weight: 900; }
+.cat-work   .cat-header { background: #eef2ff; }
+.cat-health .cat-header { background: #ecfdf5; }
+.cat-ent    .cat-header { background: #fff7ed; }
+.cat-learn  .cat-header { background: #fdf4ff; }
+.cat-work   .cat-name, .cat-work   .cat-total { color: #3b6cf6; }
+.cat-health .cat-name, .cat-health .cat-total { color: #059669; }
+.cat-ent    .cat-name, .cat-ent    .cat-total { color: #ea580c; }
+.cat-learn  .cat-name, .cat-learn  .cat-total { color: #9333ea; }
+
+.sub-item { padding: 13px 20px; border-top: 1px solid #f5f5f5; cursor: pointer; transition: background 0.1s; }
+.sub-item:hover { background: #fafafa; }
+.sub-row { display: flex; align-items: center; justify-content: space-between; }
+.sub-name { font-size: 13px; font-weight: 700; }
+.sub-cost { font-size: 13px; font-weight: 800; color: #444; }
+.sub-meta { display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+.tag { display: inline-block; padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 800; }
+.tag-high { background: #ffe0e0; color: #d63031; }
+.tag-mid  { background: #fff3cd; color: #e67e22; }
+.tag-low  { background: #e0f7e9; color: #00b894; }
+.freq-lbl { font-size: 11px; color: #999; }
+.usage-bar { flex: 1; height: 5px; background: #eee; border-radius: 3px; min-width: 50px; }
+.usage-fill { height: 5px; border-radius: 3px; }
+.cat-work   .usage-fill { background: #6c63ff; }
+.cat-health .usage-fill { background: #059669; }
+.cat-ent    .usage-fill { background: #ea580c; }
+.cat-learn  .usage-fill { background: #9333ea; }
+
+.cat-add { padding: 12px 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; border-top: 1px dashed #eee; transition: background 0.1s; }
+.cat-work   .cat-add { color: #3b6cf6; }
+.cat-health .cat-add { color: #059669; }
+.cat-ent    .cat-add { color: #ea580c; }
+.cat-learn  .cat-add { color: #9333ea; }
+.cat-add:hover { background: #f9f9f9; }
+
+/* ===== FOOTER STATS ===== */
+.footer-stats { margin-top: 28px; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.footer-stat { text-align: center; }
+.footer-val { font-size: 26px; font-weight: 900; }
+.footer-lbl { font-size: 11px; color: #888; margin-top: 4px; }
+.divider { width: 1px; height: 50px; background: #eee; }
+.ls-lbl { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 8px; }
+.ls-bars { display: flex; flex-direction: column; gap: 6px; }
+.ls-row { display: flex; align-items: center; gap: 10px; }
+.ls-name { font-size: 11px; color: #666; width: 55px; }
+.ls-bar-bg { flex: 1; height: 8px; background: #eee; border-radius: 4px; }
+.ls-bar-fill { height: 8px; border-radius: 4px; }
+.ls-pct { font-size: 11px; color: #888; width: 36px; text-align: right; }
+
+/* ===== LIST PAGE ===== */
+.list-toolbar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+.search-box { flex: 1; min-width: 180px; padding: 9px 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 13px; outline: none; }
+.search-box:focus { border-color: #ff6b6b; }
+.filter-btn { padding: 7px 14px; border: 1.5px solid #eee; border-radius: 20px; background: #fff; font-size: 12px; font-weight: 600; color: #666; cursor: pointer; }
+.filter-btn.sel { background: #ff6b6b; color: #fff; border-color: #ff6b6b; }
+
+.list-table-wrap { background: #fff; border-radius: 18px; box-shadow: 0 2px 14px rgba(0,0,0,0.06); overflow: hidden; }
+.list-table { width: 100%; border-collapse: collapse; }
+.list-table thead tr { background: #fff8f5; }
+.list-table th { padding: 13px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f0e8e0; }
+.list-table td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid #faf5f2; vertical-align: middle; }
+.list-table tr:last-child td { border-bottom: none; }
+.list-table tr:hover td { background: #fffaf8; }
+.item-name { font-weight: 700; }
+.item-sub  { font-size: 11px; color: #bbb; margin-top: 2px; }
+.cost-cell { font-weight: 900; color: #ee5a24; }
+.purpose-cell { font-size: 12px; color: #666; max-width: 180px; }
+.action-cell { display: flex; gap: 6px; }
+.edit-btn   { padding: 5px 10px; border-radius: 8px; background: #f0f0f0; border: none; font-size: 11px; cursor: pointer; font-weight: 600; color: #666; }
+.delete-btn { padding: 5px 10px; border-radius: 8px; background: #ffe0e0; border: none; font-size: 11px; cursor: pointer; font-weight: 600; color: #d63031; }
+.total-row td { font-weight: 900; background: #fff8f5; color: #ee5a24; }
+
+/* ===== REVIEW PAGE ===== */
+.review-grid { display: grid; gap: 16px; }
+.review-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.review-card.alert { border-left: 4px solid #ff6b6b; }
+.review-card.ok { border-left: 4px solid #00b894; }
+.review-info { flex: 1; min-width: 160px; }
+.review-name { font-size: 14px; font-weight: 800; }
+.review-reason { font-size: 12px; color: #888; margin-top: 4px; }
+.review-cost { font-size: 14px; font-weight: 900; color: #ee5a24; }
+.review-badge { padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+.badge-cancel { background: #ffe0e0; color: #d63031; }
+.badge-keep   { background: #e0f7e9; color: #00b894; }
+.badge-watch  { background: #fff3cd; color: #e67e22; }
+.review-actions { display: flex; gap: 8px; }
+.rc-btn { padding: 8px 16px; border-radius: 12px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; }
+.rc-keep   { background: #e0f7e9; color: #00b894; }
+.rc-cancel { background: #ffe0e0; color: #d63031; }
+
+/* ===== MODAL ===== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 200; display: none; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 24px; padding: 28px; width: 90%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal h2 { font-size: 18px; font-weight: 800; margin-bottom: 20px; color: #1a1a2e; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 6px; display: block; }
+.form-input, .form-select { width: 100%; padding: 10px 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 13px; outline: none; font-family: inherit; }
+.form-input:focus, .form-select:focus { border-color: #ff6b6b; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+.modal-cancel { padding: 10px 20px; background: #f5f5f5; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.modal-save   { padding: 10px 24px; background: #ff6b6b; color: #fff; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 300; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header { padding: 0 16px; }
+  .main { padding: 20px 12px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">SubLife <span class="logo-tag">ライフスタイル最適化</span></div>
+  <div class="header-right">
+    <button class="btn btn-outline" onclick="openModal()">＋ 追加</button>
+    <button class="btn btn-white" onclick="showPage('review')">📋 月次レビュー</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showPage('dashboard')">🏠 ダッシュボード</div>
+  <div class="nav-tab" onclick="showPage('list')">📋 一覧・管理</div>
+  <div class="nav-tab" onclick="showPage('review')">🔍 月次レビュー</div>
+</div>
+
+<div class="main">
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="page-dashboard" class="page active">
+    <div class="review-banner">
+      <div class="banner-icon">🔔</div>
+      <div class="banner-text">
+        <h3>月次レビューのお時間です！</h3>
+        <p>先月のサブスク利用状況を振り返って、必要なものだけ残しましょう</p>
+      </div>
+      <button class="banner-btn" onclick="showPage('review')">レビューする →</button>
+    </div>
+
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="sc-icon">💸</div>
+        <div class="sc-val c-orange" id="total-display">¥0</div>
+        <div class="sc-lbl">今月の合計</div>
+        <div class="sc-sub c-orange" id="yearly-display">年間 ¥0</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon">✅</div>
+        <div class="sc-val c-purple" id="count-display">0</div>
+        <div class="sc-lbl">契約中サービス数</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon">⚠️</div>
+        <div class="sc-val c-orange" id="low-roi-display">0</div>
+        <div class="sc-lbl">解約候補（ROI低）</div>
+        <div class="sc-sub" id="saving-display" style="color:#00b894;"></div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-icon">🏆</div>
+        <div class="sc-val c-green" id="high-roi-display">0</div>
+        <div class="sc-lbl">ROI高 — 維持推奨</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <div class="section-title">カテゴリ別サブスク</div>
+      <button class="add-btn" onclick="openModal()">＋ 新規追加</button>
+    </div>
+
+    <div class="cat-grid" id="cat-grid"></div>
+
+    <div class="footer-stats">
+      <div class="footer-stat">
+        <div class="footer-val c-orange" id="fs-total">¥0</div>
+        <div class="footer-lbl">今月の合計</div>
+      </div>
+      <div class="divider"></div>
+      <div class="footer-stat">
+        <div class="footer-val" style="color:#059669;" id="fs-saving">¥0</div>
+        <div class="footer-lbl">解約で節約できる額</div>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="ls-lbl">ライフスタイル別 支出比率</div>
+        <div class="ls-bars" id="ls-bars"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIST PAGE ===== -->
+  <div id="page-list" class="page">
+    <div class="list-toolbar">
+      <input class="search-box" type="text" placeholder="🔍 サービス名で検索..." oninput="renderList()" id="search-input">
+      <button class="filter-btn sel" data-cat="all" onclick="setFilter('all')">すべて</button>
+      <button class="filter-btn" data-cat="work" onclick="setFilter('work')">💼 仕事</button>
+      <button class="filter-btn" data-cat="ent" onclick="setFilter('ent')">🎬 エンタメ</button>
+      <button class="filter-btn" data-cat="learn" onclick="setFilter('learn')">📚 学習</button>
+      <button class="filter-btn" data-cat="health" onclick="setFilter('health')">❤️ 健康</button>
+      <button class="add-btn" onclick="openModal()">＋ 追加</button>
+    </div>
+    <div class="list-table-wrap">
+      <table class="list-table">
+        <thead>
+          <tr>
+            <th>購入項目</th>
+            <th>月次費用</th>
+            <th>投資目的</th>
+            <th>投資対効果</th>
+            <th>使用頻度</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== REVIEW PAGE ===== -->
+  <div id="page-review" class="page">
+    <div class="section-head" style="margin-bottom:20px;">
+      <div class="section-title">今月の月次レビュー</div>
+      <span style="font-size:12px;color:#aaa;">2026年4月</span>
+    </div>
+    <div class="review-grid" id="review-grid"></div>
+  </div>
+
+</div>
+
+<!-- ===== ADD MODAL ===== -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <h2 id="modal-title">✨ サブスクを追加</h2>
+    <input type="hidden" id="edit-id" value="">
+    <div class="form-group">
+      <label class="form-label">購入項目（サービス名）*</label>
+      <input class="form-input" id="f-name" placeholder="例: Claude Pro" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">月次費用（円）*</label>
+        <input class="form-input" id="f-cost" type="number" placeholder="3000" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">カテゴリ</label>
+        <select class="form-select" id="f-cat">
+          <option value="work">💼 仕事・生産性</option>
+          <option value="ent">🎬 エンタメ</option>
+          <option value="learn">📚 学習</option>
+          <option value="health">❤️ 健康</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">投資目的</label>
+      <input class="form-input" id="f-purpose" placeholder="例: 業務効率化・コード生成" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">投資対効果</label>
+        <select class="form-select" id="f-roi">
+          <option value="high">高</option>
+          <option value="mid">中</option>
+          <option value="low">低</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">使用頻度</label>
+        <select class="form-select" id="f-freq">
+          <option value="100">毎日使用</option>
+          <option value="80">週4〜5回</option>
+          <option value="55">週2〜3回</option>
+          <option value="35">週1〜2回</option>
+          <option value="15">月数回</option>
+          <option value="5">ほぼ未使用</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
+      <button class="modal-save" onclick="saveItem()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== DATA =====
+const CAT_CONFIG = {
+  work:   { label: '仕事・生産性', emoji: '💼', cls: 'cat-work',   color: '#3b6cf6' },
+  health: { label: '健康',         emoji: '❤️', cls: 'cat-health', color: '#059669' },
+  ent:    { label: 'エンタメ',     emoji: '🎬', cls: 'cat-ent',    color: '#ea580c' },
+  learn:  { label: '学習',         emoji: '📚', cls: 'cat-learn',  color: '#9333ea' },
+};
+const FREQ_LABELS = { '100':'毎日使用','80':'週4〜5回','55':'週2〜3回','35':'週1〜2回','15':'月数回','5':'ほぼ未使用' };
+const ROI_LABELS  = { high:'高', mid:'中', low:'低' };
+
+let subs = [
+  { id:1, name:'🤖 Claude Pro',     cost:3000, cat:'work',   purpose:'業務効率化・コード生成',       roi:'high', freq:100 },
+  { id:2, name:'📐 Figma Pro',      cost:2000, cat:'work',   purpose:'UIデザイン・プロトタイプ',     roi:'high', freq:80  },
+  { id:3, name:'☁️ Notion Plus',   cost:1280, cat:'work',   purpose:'ドキュメント管理',             roi:'mid',  freq:55  },
+  { id:4, name:'🗃️ Dropbox Plus', cost:730,  cat:'work',   purpose:'ファイル共有・バックアップ',   roi:'low',  freq:15  },
+  { id:5, name:'🎵 Spotify',        cost:980,  cat:'ent',    purpose:'作業BGM・リラックス',          roi:'high', freq:100 },
+  { id:6, name:'🎬 Netflix',        cost:1490, cat:'ent',    purpose:'映画・ドラマ視聴',             roi:'mid',  freq:45  },
+  { id:7, name:'📖 Udemy',          cost:2000, cat:'learn',  purpose:'プログラミング学習',           roi:'low',  freq:20  },
+  { id:8, name:'🏋️ ライザップ App',cost:1000, cat:'health', purpose:'自宅トレーニング',             roi:'mid',  freq:60  },
+];
+let nextId = 9;
+let listFilter = 'all';
+
+// ===== COMPUTED =====
+function totalCost() { return subs.reduce((s,x)=>s+x.cost,0); }
+function lowRoiSubs() { return subs.filter(x=>x.roi==='low'); }
+function highRoiSubs(){ return subs.filter(x=>x.roi==='high'); }
+function catSubs(cat) { return subs.filter(x=>x.cat===cat); }
+function catTotal(cat){ return catSubs(cat).reduce((s,x)=>s+x.cost,0); }
+function savingAmt()  { return lowRoiSubs().reduce((s,x)=>s+x.cost,0); }
+
+function fmt(n){ return '¥'+n.toLocaleString(); }
+
+// ===== RENDER =====
+function renderAll() {
+  renderSummary();
+  renderCatGrid();
+  renderList();
+  renderReview();
+  renderFooter();
+}
+
+function renderSummary() {
+  const total = totalCost();
+  document.getElementById('total-display').textContent = fmt(total);
+  document.getElementById('yearly-display').textContent = '年間 '+fmt(total*12);
+  document.getElementById('count-display').textContent = subs.length;
+  document.getElementById('low-roi-display').textContent = lowRoiSubs().length+'件';
+  document.getElementById('high-roi-display').textContent = highRoiSubs().length+'件';
+  const s = savingAmt();
+  document.getElementById('saving-display').textContent = s>0 ? fmt(s)+'/月 節約余地' : '';
+}
+
+function renderCatGrid() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = '';
+  Object.entries(CAT_CONFIG).forEach(([catKey, cfg]) => {
+    const items = catSubs(catKey);
+    const total = catTotal(catKey);
+    const card = document.createElement('div');
+    card.className = 'cat-card '+cfg.cls;
+    let itemsHtml = items.map(s => `
+      <div class="sub-item" onclick="openModalEdit(${s.id})">
+        <div class="sub-row">
+          <span class="sub-name">${s.name}</span>
+          <span class="sub-cost">${fmt(s.cost)}</span>
+        </div>
+        <div class="sub-meta">
+          <span class="tag tag-${s.roi}">ROI ${ROI_LABELS[s.roi]}</span>
+          <div class="usage-bar"><div class="usage-fill" style="width:${s.freq}%;"></div></div>
+          <span class="freq-lbl">${FREQ_LABELS[String(s.freq)]||''}</span>
+        </div>
+      </div>`).join('');
+    card.innerHTML = `
+      <div class="cat-header">
+        <span class="cat-emoji">${cfg.emoji}</span>
+        <span class="cat-name">${cfg.label}</span>
+        <span class="cat-total">${fmt(total)}</span>
+      </div>
+      ${itemsHtml}
+      <div class="cat-add" onclick="openModalCat('${catKey}')">＋ 追加する</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderList() {
+  const q = (document.getElementById('search-input')?.value||'').toLowerCase();
+  const filtered = subs.filter(s=>{
+    const matchCat = listFilter==='all' || s.cat===listFilter;
+    const matchQ   = !q || s.name.toLowerCase().includes(q) || (s.purpose||'').toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  const tbody = document.getElementById('list-body');
+  const total = filtered.reduce((s,x)=>s+x.cost,0);
+  tbody.innerHTML = filtered.map(s=>`
+    <tr>
+      <td><div class="item-name">${s.name}</div><div class="item-sub">${CAT_CONFIG[s.cat].emoji} ${CAT_CONFIG[s.cat].label}</div></td>
+      <td><span class="cost-cell">${fmt(s.cost)}</span></td>
+      <td><span class="purpose-cell">${s.purpose||'—'}</span></td>
+      <td><span class="tag tag-${s.roi}">ROI ${ROI_LABELS[s.roi]}</span></td>
+      <td><span style="font-size:12px;color:#666;">${FREQ_LABELS[String(s.freq)]||''}</span></td>
+      <td><div class="action-cell">
+        <button class="edit-btn" onclick="openModalEdit(${s.id})">編集</button>
+        <button class="delete-btn" onclick="deleteItem(${s.id})">削除</button>
+      </div></td>
+    </tr>`).join('')+`
+    <tr class="total-row">
+      <td>合計</td>
+      <td>${fmt(total)}</td>
+      <td colspan="4" style="font-size:12px;font-weight:400;color:#aaa;">年間換算：${fmt(total*12)}</td>
+    </tr>`;
+}
+
+function renderReview() {
+  const grid = document.getElementById('review-grid');
+  const sorted = [...subs].sort((a,b)=>{
+    const order = {low:0,mid:1,high:2};
+    return order[a.roi]-order[b.roi];
+  });
+  grid.innerHTML = sorted.map(s=>{
+    let badge, badgeCls, cls, reason;
+    if(s.roi==='low'){
+      badge='🚨 解約候補'; badgeCls='badge-cancel'; cls='alert';
+      reason = s.freq<=15 ? `使用頻度が低い（${FREQ_LABELS[String(s.freq)]}）` : '費用対効果が低い';
+    } else if(s.roi==='mid'){
+      badge='👀 要観察'; badgeCls='badge-watch'; cls='';
+      reason = '利用状況を継続して確認しましょう';
+    } else {
+      badge='✅ 維持推奨'; badgeCls='badge-keep'; cls='ok';
+      reason = `使用頻度が高い（${FREQ_LABELS[String(s.freq)]}）・高コスパ`;
+    }
+    return `
+    <div class="review-card ${cls}">
+      <div style="font-size:28px;">${s.name.match(/^(\S+)/)?.[1]||'📦'}</div>
+      <div class="review-info">
+        <div class="review-name">${s.name}</div>
+        <div class="review-reason">${reason}</div>
+      </div>
+      <span class="review-badge ${badgeCls}">${badge}</span>
+      <div class="review-cost">${fmt(s.cost)}/月</div>
+      <div class="review-actions">
+        <button class="rc-btn rc-keep" onclick="showToast('✅ 維持しました')">維持する</button>
+        ${s.roi!=='high' ? `<button class="rc-btn rc-cancel" onclick="deleteItem(${s.id},true)">解約する</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderFooter() {
+  document.getElementById('fs-total').textContent = fmt(totalCost());
+  document.getElementById('fs-saving').textContent = fmt(savingAmt());
+  const total = totalCost()||1;
+  const catKeys = ['work','ent','learn','health'];
+  const colors = { work:'#6c63ff', ent:'#ea580c', learn:'#9333ea', health:'#059669' };
+  document.getElementById('ls-bars').innerHTML = catKeys.map(k=>{
+    const pct = Math.round(catTotal(k)/total*100);
+    return `<div class="ls-row">
+      <span class="ls-name">${CAT_CONFIG[k].emoji} ${CAT_CONFIG[k].label.slice(0,4)}</span>
+      <div class="ls-bar-bg"><div class="ls-bar-fill" style="width:${pct}%;background:${colors[k]};"></div></div>
+      <span class="ls-pct">${pct}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ===== MODAL =====
+function openModal(cat) {
+  document.getElementById('modal-title').textContent = '✨ サブスクを追加';
+  document.getElementById('edit-id').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-cost').value = '';
+  document.getElementById('f-cat').value = cat||'work';
+  document.getElementById('f-purpose').value = '';
+  document.getElementById('f-roi').value = 'high';
+  document.getElementById('f-freq').value = '100';
+  document.getElementById('modal').classList.add('open');
+}
+function openModalCat(cat) { openModal(cat); }
+function openModalEdit(id) {
+  const s = subs.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('modal-title').textContent = '✏️ 編集';
+  document.getElementById('edit-id').value = id;
+  document.getElementById('f-name').value = s.name;
+  document.getElementById('f-cost').value = s.cost;
+  document.getElementById('f-cat').value = s.cat;
+  document.getElementById('f-purpose').value = s.purpose||'';
+  document.getElementById('f-roi').value = s.roi;
+  document.getElementById('f-freq').value = String(s.freq);
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModalOutside(e) { if(e.target.id==='modal') closeModal(); }
+
+function saveItem() {
+  const name = document.getElementById('f-name').value.trim();
+  const cost = parseInt(document.getElementById('f-cost').value)||0;
+  if(!name||!cost){ showToast('❗ サービス名と費用を入力してください'); return; }
+  const editId = document.getElementById('edit-id').value;
+  const obj = {
+    name, cost,
+    cat: document.getElementById('f-cat').value,
+    purpose: document.getElementById('f-purpose').value.trim(),
+    roi: document.getElementById('f-roi').value,
+    freq: parseInt(document.getElementById('f-freq').value),
+  };
+  if(editId) {
+    const idx = subs.findIndex(x=>x.id===parseInt(editId));
+    if(idx>=0) subs[idx] = {...subs[idx],...obj};
+    showToast('✅ 更新しました');
+  } else {
+    subs.push({id:nextId++,...obj});
+    showToast('✅ 追加しました');
+  }
+  closeModal();
+  renderAll();
+}
+
+function deleteItem(id, fromReview=false) {
+  subs = subs.filter(x=>x.id!==id);
+  showToast('🗑️ 削除しました');
+  renderAll();
+  if(fromReview) renderReview();
+}
+
+// ===== NAV =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {dashboard:0,list:1,review:2};
+  tabs[map[id]]?.classList.add('active');
+  renderAll();
+}
+
+function setFilter(cat) {
+  listFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('sel'));
+  document.querySelector(`[data-cat="${cat}"]`).classList.add('sel');
+  renderList();
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// Init
+renderAll();
+</script>
+</body>
+</html>
