@@ -587,8 +587,11 @@ sb.auth.onAuthStateChange(async (event, session) => {
 // ===== LOADING =====
 function showLoading(show, msg) {
   const el = document.getElementById('loading-overlay');
-  el.classList.toggle('show', show);
-  if (msg) document.getElementById('loading-text').textContent = msg;
+  el.style.display = show ? 'flex' : 'none';
+  if (msg) {
+    const txt = document.getElementById('loading-text');
+    if (txt) txt.textContent = msg;
+  }
 }
 
 // ===== SETUP / DB ERROR BANNERS =====
