@@ -4,71 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SubLife — サブスク ライフスタイル最適化</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5; color: #1a1a2e; min-height: 100vh; }
-
-/* ===== AUTH SCREEN ===== */
-.auth-overlay {
-  position: fixed; inset: 0; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-  z-index: 1000; display: flex; align-items: center; justify-content: center;
-}
-.auth-overlay.hidden { display: none; }
-.auth-box {
-  background: #fff; border-radius: 28px; padding: 40px 36px; width: 90%; max-width: 420px;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
-}
-.auth-logo { font-size: 28px; font-weight: 900; color: #ee5a24; margin-bottom: 4px; }
-.auth-tagline { font-size: 13px; color: #aaa; margin-bottom: 28px; }
-.auth-tabs { display: flex; gap: 0; margin-bottom: 24px; background: #f5f5f5; border-radius: 12px; padding: 4px; }
-.auth-tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 700; color: #aaa; cursor: pointer; border-radius: 9px; transition: all 0.2s; }
-.auth-tab.active { background: #fff; color: #ee5a24; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-.auth-label { font-size: 12px; font-weight: 700; color: #666; margin-bottom: 6px; display: block; }
-.auth-input {
-  width: 100%; padding: 12px 14px; border: 1.5px solid #eee; border-radius: 12px;
-  font-size: 14px; outline: none; margin-bottom: 14px; font-family: inherit;
-}
-.auth-input:focus { border-color: #ff6b6b; }
-.auth-btn {
-  width: 100%; padding: 13px; background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-  color: #fff; border: none; border-radius: 14px; font-size: 14px; font-weight: 800;
-  cursor: pointer; margin-top: 4px; transition: opacity 0.15s;
-}
-.auth-btn:hover { opacity: 0.88; }
-.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.auth-error { background: #ffe0e0; color: #d63031; padding: 10px 14px; border-radius: 10px; font-size: 12px; margin-bottom: 14px; display: none; }
-.auth-error.show { display: block; }
-
-/* ===== LOADING SPINNER ===== */
-.loading-overlay {
-  position: fixed; inset: 0; background: rgba(255,248,245,0.92); z-index: 500;
-  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-}
-.loading-overlay.show { display: flex; }
-.spinner { width: 44px; height: 44px; border: 4px solid #ffe0d5; border-top-color: #ee5a24; border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 14px; color: #888; font-weight: 600; }
-
-/* ===== SETUP ERROR BANNER ===== */
-.setup-banner {
-  background: #fff3cd; border: 2px solid #f59e0b; border-radius: 16px;
-  padding: 20px 24px; margin-bottom: 24px; display: none;
-}
-.setup-banner.show { display: block; }
-.setup-banner h3 { font-size: 14px; font-weight: 800; color: #92400e; margin-bottom: 8px; }
-.setup-banner p  { font-size: 12px; color: #78350f; line-height: 1.6; }
-.setup-banner code { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
-
-/* ===== DB ERROR NOTICE ===== */
-.db-error-notice {
-  background: #ffe0e0; border: 2px solid #ff6b6b; border-radius: 16px;
-  padding: 20px 24px; margin-bottom: 24px; display: none;
-}
-.db-error-notice.show { display: block; }
-.db-error-notice h3 { font-size: 14px; font-weight: 800; color: #991b1b; margin-bottom: 8px; }
-.db-error-notice p  { font-size: 12px; color: #7f1d1d; line-height: 1.6; }
-.db-error-notice code { background: #fee2e2; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px; }
 
 /* ===== HEADER ===== */
 .header {
@@ -81,11 +19,9 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 .logo { font-size: 20px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 10px; }
 .logo-tag { font-size: 11px; color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 10px; }
 .header-right { display: flex; gap: 10px; align-items: center; }
-.user-badge { font-size: 12px; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .btn { padding: 8px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.15s; }
 .btn-white { background: #fff; color: #ee5a24; }
 .btn-outline { background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
-.btn-logout { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border: 1.5px solid rgba(255,255,255,0.3); font-size: 12px; padding: 6px 12px; }
 .btn:hover { opacity: 0.85; transform: translateY(-1px); }
 
 /* ===== NAV TABS ===== */
@@ -123,6 +59,7 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 .c-orange { color: #ff6b6b; }
 .c-green  { color: #00b894; }
 .c-purple { color: #6c63ff; }
+.c-blue   { color: #0984e3; }
 
 .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .section-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
@@ -161,6 +98,7 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 .cat-health .usage-fill { background: #059669; }
 .cat-ent    .usage-fill { background: #ea580c; }
 .cat-learn  .usage-fill { background: #9333ea; }
+
 .cat-add { padding: 12px 20px; font-size: 12px; font-weight: 700; cursor: pointer; text-align: center; border-top: 1px dashed #eee; transition: background 0.1s; }
 .cat-work   .cat-add { color: #3b6cf6; }
 .cat-health .cat-add { color: #059669; }
@@ -236,7 +174,6 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 .modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
 .modal-cancel { padding: 10px 20px; background: #f5f5f5; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
 .modal-save   { padding: 10px 24px; background: #ff6b6b; color: #fff; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.modal-save:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* TOAST */
 .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 300; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
@@ -247,44 +184,17 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
   .header { padding: 0 16px; }
   .main { padding: 20px 12px; }
   .form-row { grid-template-columns: 1fr; }
-  .user-badge { max-width: 100px; }
 }
 </style>
 </head>
 <body>
 
-<!-- ===== AUTH SCREEN ===== -->
-<div class="auth-overlay" id="auth-overlay">
-  <div class="auth-box">
-    <div class="auth-logo">SubLife</div>
-    <div class="auth-tagline">サブスク ライフスタイル最適化</div>
-    <div class="auth-tabs">
-      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">ログイン</div>
-      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">新規登録</div>
-    </div>
-    <div class="auth-error" id="auth-error"></div>
-    <label class="auth-label">メールアドレス</label>
-    <input class="auth-input" id="auth-email" type="email" placeholder="you@example.com" />
-    <label class="auth-label">パスワード</label>
-    <input class="auth-input" id="auth-password" type="password" placeholder="6文字以上" />
-    <button class="auth-btn" id="auth-submit" onclick="handleAuth()">ログイン</button>
-  </div>
-</div>
-
-<!-- ===== LOADING ===== -->
-<div class="loading-overlay" id="loading-overlay">
-  <div class="spinner"></div>
-  <div class="loading-text" id="loading-text">読み込み中...</div>
-</div>
-
 <!-- HEADER -->
 <div class="header">
   <div class="logo">SubLife <span class="logo-tag">ライフスタイル最適化</span></div>
   <div class="header-right">
-    <span class="user-badge" id="user-badge">👤</span>
     <button class="btn btn-outline" onclick="openModal()">＋ 追加</button>
     <button class="btn btn-white" onclick="showPage('review')">📋 月次レビュー</button>
-    <button class="btn btn-logout" onclick="handleLogout()">ログアウト</button>
   </div>
 </div>
 
@@ -296,21 +206,9 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 </div>
 
 <div class="main">
+
   <!-- ===== DASHBOARD ===== -->
   <div id="page-dashboard" class="page active">
-    <!-- セットアップエラーバナー -->
-    <div class="setup-banner" id="setup-banner">
-      <h3>⚙️ Supabase の設定が必要です</h3>
-      <p>HTMLファイル内の <code>YOUR_SUPABASE_URL</code> と <code>YOUR_SUPABASE_ANON_KEY</code> を<br>
-      あなたの Supabase プロジェクトの値に書き換えてください。</p>
-    </div>
-    <!-- DBエラーバナー -->
-    <div class="db-error-notice" id="db-error-notice">
-      <h3>🗄️ データベーステーブルが見つかりません</h3>
-      <p>Supabase の SQL Editor で <code>subscriptions</code> テーブルを作成してください。<br>
-      作成後、ページをリロードすると正常に動作します。</p>
-    </div>
-
     <div class="review-banner">
       <div class="banner-icon">🔔</div>
       <div class="banner-text">
@@ -319,6 +217,7 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
       </div>
       <button class="banner-btn" onclick="showPage('review')">レビューする →</button>
     </div>
+
     <div class="summary-cards">
       <div class="summary-card">
         <div class="sc-icon">💸</div>
@@ -343,11 +242,14 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
         <div class="sc-lbl">ROI高 — 維持推奨</div>
       </div>
     </div>
+
     <div class="section-head">
       <div class="section-title">カテゴリ別サブスク</div>
       <button class="add-btn" onclick="openModal()">＋ 新規追加</button>
     </div>
+
     <div class="cat-grid" id="cat-grid"></div>
+
     <div class="footer-stats">
       <div class="footer-stat">
         <div class="footer-val c-orange" id="fs-total">¥0</div>
@@ -398,13 +300,14 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
   <div id="page-review" class="page">
     <div class="section-head" style="margin-bottom:20px;">
       <div class="section-title">今月の月次レビュー</div>
-      <span style="font-size:12px;color:#aaa;" id="review-month"></span>
+      <span style="font-size:12px;color:#aaa;">2026年4月</span>
     </div>
     <div class="review-grid" id="review-grid"></div>
   </div>
+
 </div>
 
-<!-- ===== ADD/EDIT MODAL ===== -->
+<!-- ===== ADD MODAL ===== -->
 <div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
   <div class="modal">
     <h2 id="modal-title">✨ サブスクを追加</h2>
@@ -455,7 +358,7 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
     </div>
     <div class="modal-actions">
       <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
-      <button class="modal-save" id="modal-save-btn" onclick="saveItem()">保存する</button>
+      <button class="modal-save" onclick="saveItem()">保存する</button>
     </div>
   </div>
 </div>
@@ -463,17 +366,7 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// ★ Supabase 設定 — 自分のプロジェクトの値に変更してください
-// ============================================================
-const SUPABASE_URL = 'https://wzwsfoluztgqbflzpyot.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6d3Nmb2x1enRncWJmbHpweW90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0ODI1NjcsImV4cCI6MjA5MjA1ODU2N30.3wWYOgrfyN0GlQM5fRr7RQMO4kLqGas4_VOP0JWgVCc';
-// ============================================================
-
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ===== STATE =====
+// ===== DATA =====
 const CAT_CONFIG = {
   work:   { label: '仕事・生産性', emoji: '💼', cls: 'cat-work',   color: '#3b6cf6' },
   health: { label: '健康',         emoji: '❤️', cls: 'cat-health', color: '#059669' },
@@ -483,186 +376,18 @@ const CAT_CONFIG = {
 const FREQ_LABELS = { '100':'毎日使用','80':'週4〜5回','55':'週2〜3回','35':'週1〜2回','15':'月数回','5':'ほぼ未使用' };
 const ROI_LABELS  = { high:'高', mid:'中', low:'低' };
 
-let subs = [];
+let subs = [
+  { id:1, name:'🤖 Claude Pro',     cost:3000, cat:'work',   purpose:'業務効率化・コード生成',       roi:'high', freq:100 },
+  { id:2, name:'📐 Figma Pro',      cost:2000, cat:'work',   purpose:'UIデザイン・プロトタイプ',     roi:'high', freq:80  },
+  { id:3, name:'☁️ Notion Plus',   cost:1280, cat:'work',   purpose:'ドキュメント管理',             roi:'mid',  freq:55  },
+  { id:4, name:'🗃️ Dropbox Plus', cost:730,  cat:'work',   purpose:'ファイル共有・バックアップ',   roi:'low',  freq:15  },
+  { id:5, name:'🎵 Spotify',        cost:980,  cat:'ent',    purpose:'作業BGM・リラックス',          roi:'high', freq:100 },
+  { id:6, name:'🎬 Netflix',        cost:1490, cat:'ent',    purpose:'映画・ドラマ視聴',             roi:'mid',  freq:45  },
+  { id:7, name:'📖 Udemy',          cost:2000, cat:'learn',  purpose:'プログラミング学習',           roi:'low',  freq:20  },
+  { id:8, name:'🏋️ ライザップ App',cost:1000, cat:'health', purpose:'自宅トレーニング',             roi:'mid',  freq:60  },
+];
+let nextId = 9;
 let listFilter = 'all';
-let currentUser = null;
-let authMode = 'login';
-
-// ===== REVIEW MONTH =====
-const now = new Date();
-document.getElementById('review-month').textContent = `${now.getFullYear()}年${now.getMonth()+1}月`;
-
-// ===== AUTH UI =====
-function switchAuthTab(mode) {
-  authMode = mode;
-  document.getElementById('tab-login').classList.toggle('active', mode==='login');
-  document.getElementById('tab-signup').classList.toggle('active', mode==='signup');
-  document.getElementById('auth-submit').textContent = mode==='login' ? 'ログイン' : 'アカウント作成';
-  document.getElementById('auth-error').classList.remove('show');
-}
-
-function showAuthError(msg) {
-  const el = document.getElementById('auth-error');
-  el.textContent = msg;
-  el.classList.add('show');
-}
-
-async function handleAuth() {
-  const email    = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
-  const btn      = document.getElementById('auth-submit');
-
-  if (!email || !password) { showAuthError('メールアドレスとパスワードを入力してください'); return; }
-  if (password.length < 6) { showAuthError('パスワードは6文字以上で入力してください'); return; }
-
-  btn.disabled = true;
-  btn.textContent = '処理中...';
-  document.getElementById('auth-error').classList.remove('show');
-
-  try {
-    let result;
-    if (authMode === 'login') {
-      result = await sb.auth.signInWithPassword({ email, password });
-    } else {
-      result = await sb.auth.signUp({ email, password });
-    }
-
-    if (result.error) {
-      const msgMap = {
-        'Invalid login credentials': 'メールアドレスまたはパスワードが間違っています',
-        'User already registered': 'このメールアドレスはすでに登録されています',
-        'Email not confirmed': 'メール確認が完了していません。受信箱を確認してください',
-      };
-      showAuthError(msgMap[result.error.message] || result.error.message);
-    } else if (authMode === 'signup' && !result.data.session) {
-      showAuthError('確認メールを送信しました。受信箱をご確認ください。');
-    }
-    // セッション確立は onAuthStateChange が処理
-  } catch(e) {
-    showAuthError('エラーが発生しました。再度お試しください。');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = authMode === 'login' ? 'ログイン' : 'アカウント作成';
-  }
-}
-
-async function handleLogout() {
-  await sb.auth.signOut();
-  subs = [];
-  renderAll();
-}
-
-// Enter キー対応
-document.getElementById('auth-password').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleAuth();
-});
-
-// ===== AUTH STATE LISTENER =====
-sb.auth.onAuthStateChange(async (event, session) => {
-  if (session?.user) {
-    currentUser = session.user;
-    document.getElementById('user-badge').textContent = '👤 ' + currentUser.email;
-    document.getElementById('auth-overlay').classList.add('hidden');
-    showLoading(true, 'データを読み込み中...');
-    await loadSubs();
-    showLoading(false);
-    renderAll();
-  } else {
-    currentUser = null;
-    showLoading(false);
-    document.getElementById('auth-overlay').classList.remove('hidden');
-    document.getElementById('user-badge').textContent = '👤';
-    showSetupBanner(false);
-    showDbErrorBanner(false);
-    subs = [];
-    renderAll();
-  }
-});
-
-// ===== LOADING =====
-function showLoading(show, msg) {
-  const el = document.getElementById('loading-overlay');
-  el.classList.toggle('show', show);
-  if (msg) document.getElementById('loading-text').textContent = msg;
-}
-
-// ===== SETUP / DB ERROR BANNERS =====
-function showSetupBanner(show) {
-  document.getElementById('setup-banner').classList.toggle('show', show);
-}
-function showDbErrorBanner(show) {
-  document.getElementById('db-error-notice').classList.toggle('show', show);
-}
-
-// ===== SUPABASE CRUD =====
-async function loadSubs() {
-  showDbErrorBanner(false);
-  showSetupBanner(false);
-  try {
-    const { data, error } = await sb
-      .from('subscriptions')
-      .select('*')
-      .order('created_at', { ascending: true });
-    if (error) {
-      // テーブル未作成 or 接続エラー
-      if (error.code === '42P01' || error.message.includes('does not exist')) {
-        showDbErrorBanner(true);
-      } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-        showSetupBanner(true);
-      } else {
-        showToast('❗ 読み込みエラー: ' + error.message);
-        console.error('loadSubs error:', error);
-      }
-      return;
-    }
-    subs = (data || []).map(r => ({
-      id: r.id, name: r.name, cost: r.cost,
-      cat: r.cat, purpose: r.purpose || '',
-      roi: r.roi, freq: r.freq,
-    }));
-  } catch(e) {
-    showSetupBanner(true);
-    console.error('loadSubs exception:', e);
-  }
-}
-
-async function dbInsert(obj) {
-  const { data, error } = await sb
-    .from('subscriptions')
-    .insert([{ ...obj, user_id: currentUser.id }])
-    .select()
-    .single();
-  if (error) {
-    if (error.code === '42P01' || error.message.includes('does not exist')) {
-      showDbErrorBanner(true);
-    }
-    throw error;
-  }
-  return data;
-}
-
-async function dbUpdate(id, obj) {
-  const { error } = await sb
-    .from('subscriptions')
-    .update(obj)
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
-  if (error) {
-    if (error.code === '42P01' || error.message.includes('does not exist')) {
-      showDbErrorBanner(true);
-    }
-    throw error;
-  }
-}
-
-async function dbDelete(id) {
-  const { error } = await sb
-    .from('subscriptions')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
-  if (error) throw error;
-}
 
 // ===== COMPUTED =====
 function totalCost() { return subs.reduce((s,x)=>s+x.cost,0); }
@@ -671,6 +396,7 @@ function highRoiSubs(){ return subs.filter(x=>x.roi==='high'); }
 function catSubs(cat) { return subs.filter(x=>x.cat===cat); }
 function catTotal(cat){ return catSubs(cat).reduce((s,x)=>s+x.cost,0); }
 function savingAmt()  { return lowRoiSubs().reduce((s,x)=>s+x.cost,0); }
+
 function fmt(n){ return '¥'+n.toLocaleString(); }
 
 // ===== RENDER =====
@@ -701,10 +427,10 @@ function renderCatGrid() {
     const total = catTotal(catKey);
     const card = document.createElement('div');
     card.className = 'cat-card '+cfg.cls;
-    const itemsHtml = items.map(s => `
-      <div class="sub-item" onclick="openModalEdit('${s.id}')">
+    let itemsHtml = items.map(s => `
+      <div class="sub-item" onclick="openModalEdit(${s.id})">
         <div class="sub-row">
-          <span class="sub-name">${escHtml(s.name)}</span>
+          <span class="sub-name">${s.name}</span>
           <span class="sub-cost">${fmt(s.cost)}</span>
         </div>
         <div class="sub-meta">
@@ -736,14 +462,14 @@ function renderList() {
   const total = filtered.reduce((s,x)=>s+x.cost,0);
   tbody.innerHTML = filtered.map(s=>`
     <tr>
-      <td><div class="item-name">${escHtml(s.name)}</div><div class="item-sub">${CAT_CONFIG[s.cat]?.emoji||''} ${CAT_CONFIG[s.cat]?.label||s.cat}</div></td>
+      <td><div class="item-name">${s.name}</div><div class="item-sub">${CAT_CONFIG[s.cat].emoji} ${CAT_CONFIG[s.cat].label}</div></td>
       <td><span class="cost-cell">${fmt(s.cost)}</span></td>
-      <td><span class="purpose-cell">${escHtml(s.purpose||'—')}</span></td>
+      <td><span class="purpose-cell">${s.purpose||'—'}</span></td>
       <td><span class="tag tag-${s.roi}">ROI ${ROI_LABELS[s.roi]}</span></td>
       <td><span style="font-size:12px;color:#666;">${FREQ_LABELS[String(s.freq)]||''}</span></td>
       <td><div class="action-cell">
-        <button class="edit-btn" onclick="openModalEdit('${s.id}')">編集</button>
-        <button class="delete-btn" onclick="deleteItem('${s.id}')">削除</button>
+        <button class="edit-btn" onclick="openModalEdit(${s.id})">編集</button>
+        <button class="delete-btn" onclick="deleteItem(${s.id})">削除</button>
       </div></td>
     </tr>`).join('')+`
     <tr class="total-row">
@@ -755,11 +481,10 @@ function renderList() {
 
 function renderReview() {
   const grid = document.getElementById('review-grid');
-  const sorted = [...subs].sort((a,b)=>({low:0,mid:1,high:2}[a.roi]-{low:0,mid:1,high:2}[b.roi]));
-  if (!sorted.length) {
-    grid.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px;font-size:14px;">サブスクを追加するとレビューが表示されます</div>';
-    return;
-  }
+  const sorted = [...subs].sort((a,b)=>{
+    const order = {low:0,mid:1,high:2};
+    return order[a.roi]-order[b.roi];
+  });
   grid.innerHTML = sorted.map(s=>{
     let badge, badgeCls, cls, reason;
     if(s.roi==='low'){
@@ -776,14 +501,14 @@ function renderReview() {
     <div class="review-card ${cls}">
       <div style="font-size:28px;">${s.name.match(/^(\S+)/)?.[1]||'📦'}</div>
       <div class="review-info">
-        <div class="review-name">${escHtml(s.name)}</div>
+        <div class="review-name">${s.name}</div>
         <div class="review-reason">${reason}</div>
       </div>
       <span class="review-badge ${badgeCls}">${badge}</span>
       <div class="review-cost">${fmt(s.cost)}/月</div>
       <div class="review-actions">
         <button class="rc-btn rc-keep" onclick="showToast('✅ 維持しました')">維持する</button>
-        ${s.roi!=='high' ? `<button class="rc-btn rc-cancel" onclick="deleteItem('${s.id}')">解約する</button>` : ''}
+        ${s.roi!=='high' ? `<button class="rc-btn rc-cancel" onclick="deleteItem(${s.id},true)">解約する</button>` : ''}
       </div>
     </div>`;
   }).join('');
@@ -834,52 +559,35 @@ function openModalEdit(id) {
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function closeModalOutside(e) { if(e.target.id==='modal') closeModal(); }
 
-async function saveItem() {
+function saveItem() {
   const name = document.getElementById('f-name').value.trim();
   const cost = parseInt(document.getElementById('f-cost').value)||0;
   if(!name||!cost){ showToast('❗ サービス名と費用を入力してください'); return; }
   const editId = document.getElementById('edit-id').value;
   const obj = {
     name, cost,
-    cat:     document.getElementById('f-cat').value,
+    cat: document.getElementById('f-cat').value,
     purpose: document.getElementById('f-purpose').value.trim(),
-    roi:     document.getElementById('f-roi').value,
-    freq:    parseInt(document.getElementById('f-freq').value),
+    roi: document.getElementById('f-roi').value,
+    freq: parseInt(document.getElementById('f-freq').value),
   };
-  const saveBtn = document.getElementById('modal-save-btn');
-  saveBtn.disabled = true;
-  saveBtn.textContent = '保存中...';
-  try {
-    if(editId) {
-      await dbUpdate(editId, obj);
-      const idx = subs.findIndex(x=>x.id===editId);
-      if(idx>=0) subs[idx] = { ...subs[idx], ...obj };
-      showToast('✅ 更新しました');
-    } else {
-      const newRow = await dbInsert(obj);
-      subs.push({ id: newRow.id, ...obj });
-      showToast('✅ 追加しました');
-    }
-    closeModal();
-    renderAll();
-  } catch(e) {
-    showToast('❗ 保存に失敗しました: ' + e.message);
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.textContent = '保存する';
+  if(editId) {
+    const idx = subs.findIndex(x=>x.id===parseInt(editId));
+    if(idx>=0) subs[idx] = {...subs[idx],...obj};
+    showToast('✅ 更新しました');
+  } else {
+    subs.push({id:nextId++,...obj});
+    showToast('✅ 追加しました');
   }
+  closeModal();
+  renderAll();
 }
 
-async function deleteItem(id) {
-  if(!confirm('このサブスクを削除しますか？')) return;
-  try {
-    await dbDelete(id);
-    subs = subs.filter(x=>x.id!==id);
-    showToast('🗑️ 削除しました');
-    renderAll();
-  } catch(e) {
-    showToast('❗ 削除に失敗しました: ' + e.message);
-  }
+function deleteItem(id, fromReview=false) {
+  subs = subs.filter(x=>x.id!==id);
+  showToast('🗑️ 削除しました');
+  renderAll();
+  if(fromReview) renderReview();
 }
 
 // ===== NAV =====
@@ -887,8 +595,9 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const map = {dashboard:0, list:1, review:2};
-  document.querySelectorAll('.nav-tab')[map[id]]?.classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const map = {dashboard:0,list:1,review:2};
+  tabs[map[id]]?.classList.add('active');
   renderAll();
 }
 
@@ -899,7 +608,7 @@ function setFilter(cat) {
   renderList();
 }
 
-// ===== UTILS =====
+// ===== TOAST =====
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -907,32 +616,8 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove('show'), 2500);
 }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ===== 起動時の設定チェック =====
-(async () => {
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
-    showLoading(false);
-    document.getElementById('auth-overlay').classList.add('hidden');
-    showSetupBanner(true);
-    return;
-  }
-  showLoading(true, '接続中...');
-  try {
-    const { data: { session }, error } = await sb.auth.getSession();
-    if (!session) {
-      showLoading(false);
-      document.getElementById('auth-overlay').classList.remove('hidden');
-    }
-  } catch(e) {
-    showLoading(false);
-    document.getElementById('auth-overlay').classList.add('hidden');
-    showSetupBanner(true);
-    console.error('getSession error:', e);
-  }
-})();
+// Init
+renderAll();
 </script>
 </body>
 </html>
