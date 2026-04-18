@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サブスク管理アプリ — UIモックアップ 3案</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+  /* ===== APP SWITCHER ===== */
+  .app-switcher {
+    background: #1a1a2e;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .switcher-label { color: #aaa; font-size: 12px; margin-right: 4px; white-space: nowrap; }
+  .switch-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .switch-btn.active-1 { background: #6c63ff; color: #fff; }
+  .switch-btn.active-2 { background: #00c9a7; color: #fff; }
+  .switch-btn.active-3 { background: #ff6b6b; color: #fff; }
+  .switch-btn:not(.active-1):not(.active-2):not(.active-3) { background: #2a2a3e; color: #aaa; border-color: #3a3a5e; }
+  .switch-btn:hover { opacity: 0.85; }
+
+  .app-view { display: none; }
+  .app-view.active { display: block; }
+
+  /* ===== SHARED COMPONENTS ===== */
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
+  .tag-high { background: #ffe0e0; color: #d63031; }
+  .tag-mid  { background: #fff3cd; color: #e67e22; }
+  .tag-low  { background: #e0f7e9; color: #00b894; }
+  .tag-cat-work   { background: #e8f0fe; color: #3b6cf6; }
+  .tag-cat-health { background: #e6fff5; color: #00b894; }
+  .tag-cat-ent    { background: #fff0e6; color: #e67e22; }
+  .tag-cat-learn  { background: #f3e8ff; color: #9b59b6; }
+
+  /* ======================================
+     案①: SubTracker
+  ====================================== */
+  #view1 { min-height: 100vh; background: #f5f6fa; }
+  .v1-header {
+    background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+    padding: 24px 32px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .v1-logo { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+  .v1-logo span { opacity: 0.7; font-weight: 400; font-size: 14px; margin-left: 8px; }
+  .v1-header-stats { display: flex; gap: 24px; }
+  .v1-stat { text-align: center; }
+  .v1-stat-val { font-size: 24px; font-weight: 800; }
+  .v1-stat-lbl { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  .v1-body { max-width: 960px; margin: 0 auto; padding: 28px 20px; }
+
+  .v1-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .v1-card { background: #fff; border-radius: 14px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .v1-card-icon { font-size: 24px; margin-bottom: 8px; }
+  .v1-card-val { font-size: 22px; font-weight: 800; color: #1a1a2e; }
+  .v1-card-lbl { font-size: 12px; color: #888; margin-top: 4px; }
+  .v1-card-sub { font-size: 11px; color: #6c63ff; margin-top: 6px; font-weight: 600; }
+
+  .v1-section-title { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .v1-section-title::before { content: ''; width: 4px; height: 16px; background: #6c63ff; border-radius: 2px; display: inline-block; }
+
+  .v1-filter { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .v1-filter-btn { padding: 6px 14px; border-radius: 16px; border: 1.5px solid #e0e0e0; background: #fff; font-size: 12px; cursor: pointer; font-weight: 600; color: #666; transition: all 0.15s; }
+  .v1-filter-btn.sel { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+
+  .v1-table-wrap { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); overflow: hidden; }
+  .v1-table { width: 100%; border-collapse: collapse; }
+  .v1-table thead tr { background: #f8f9ff; }
+  .v1-table th { padding: 13px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #eee; }
+  .v1-table td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid #f2f2f2; }
+  .v1-table tr:last-child td { border-bottom: none; }
+  .v1-table tr:hover td { background: #fafbff; }
+  .v1-item-name { font-weight: 700; color: #1a1a2e; }
+  .v1-item-sub  { font-size: 11px; color: #aaa; margin-top: 2px; }
+  .v1-cost { font-weight: 800; color: #6c63ff; font-size: 14px; }
+  .v1-purpose { font-size: 12px; color: #555; }
+  .v1-bar-wrap { width: 120px; }
+  .v1-bar-bg { height: 6px; background: #eee; border-radius: 3px; margin-top: 4px; }
+  .v1-bar { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #6c63ff, #a29bfe); }
+  .v1-total-row td { font-weight: 800; background: #f8f9ff; }
+
+  /* ROI bar below table */
+  .v1-chart-wrap { margin-top: 24px; }
+  .v1-chart-title { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 12px; }
+  .v1-chart-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .v1-chart-lbl { width: 100px; font-size: 12px; color: #666; text-align: right; }
+  .v1-chart-bar { height: 28px; border-radius: 6px; display: flex; align-items: center; padding: 0 12px; color: #fff; font-size: 12px; font-weight: 700; transition: width 0.3s; }
+
+
+  /* ======================================
+     案②: ROI Compass
+  ====================================== */
+  #view2 { min-height: 100vh; background: #0f172a; color: #e2e8f0; }
+  .v2-header {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    padding: 24px 32px;
+    border-bottom: 1px solid #1e293b;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .v2-logo { font-size: 20px; font-weight: 800; color: #00c9a7; }
+  .v2-logo-sub { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .v2-nav { display: flex; gap: 4px; }
+  .v2-nav-btn { padding: 7px 14px; border-radius: 8px; background: transparent; border: 1px solid #334155; color: #94a3b8; font-size: 12px; cursor: pointer; }
+  .v2-nav-btn.sel { background: #00c9a7; border-color: #00c9a7; color: #0f172a; font-weight: 700; }
+
+  .v2-body { max-width: 980px; margin: 0 auto; padding: 28px 20px; }
+
+  .v2-hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .v2-hero-card { background: #1e293b; border-radius: 16px; padding: 20px; border: 1px solid #334155; position: relative; overflow: hidden; }
+  .v2-hero-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .v2-hc-green::before { background: #00c9a7; }
+  .v2-hc-yellow::before { background: #f59e0b; }
+  .v2-hc-red::before { background: #ef4444; }
+  .v2-hc-blue::before { background: #6c63ff; }
+  .v2-hero-card .val { font-size: 28px; font-weight: 900; }
+  .v2-hc-green .val { color: #00c9a7; }
+  .v2-hc-yellow .val { color: #f59e0b; }
+  .v2-hc-red .val { color: #ef4444; }
+  .v2-hc-blue .val { color: #6c63ff; }
+  .v2-hero-card .lbl { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .v2-hero-card .sub { font-size: 12px; color: #94a3b8; margin-top: 8px; }
+
+  .v2-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+  @media (max-width: 700px) { .v2-grid { grid-template-columns: 1fr; } }
+
+  .v2-section { background: #1e293b; border-radius: 16px; border: 1px solid #334155; overflow: hidden; }
+  .v2-section-head { padding: 16px 20px; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; }
+  .v2-section-head h3 { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+  .v2-badge { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; }
+  .v2-badge-alert { background: #450a0a; color: #f87171; }
+  .v2-badge-ok { background: #052e16; color: #4ade80; }
+
+  .v2-item { padding: 14px 20px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 14px; }
+  .v2-item:last-child { border-bottom: none; }
+  .v2-item:hover { background: #263348; }
+  .v2-item-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .v2-item-info { flex: 1; min-width: 0; }
+  .v2-item-name { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+  .v2-item-purpose { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .v2-item-cost { font-size: 15px; font-weight: 900; color: #00c9a7; white-space: nowrap; }
+  .v2-item-cost-lbl { font-size: 10px; color: #64748b; text-align: right; }
+  .v2-roi-pill { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+  .roi-high { background: #052e16; color: #4ade80; }
+  .roi-mid  { background: #431407; color: #fb923c; }
+  .roi-low  { background: #450a0a; color: #f87171; }
+
+  .v2-alert-item { padding: 14px 20px; border-bottom: 1px solid #1e293b; }
+  .v2-alert-item:last-child { border-bottom: none; }
+  .v2-alert-name { font-size: 13px; font-weight: 700; color: #f87171; }
+  .v2-alert-reason { font-size: 11px; color: #64748b; margin-top: 4px; }
+  .v2-alert-cost { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .v2-alert-action { margin-top: 8px; }
+  .v2-btn-cancel { padding: 5px 12px; border-radius: 6px; background: #450a0a; border: 1px solid #ef4444; color: #f87171; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+  .v2-score-ring { display: flex; flex-direction: column; align-items: center; padding: 24px; }
+  .ring-outer { width: 120px; height: 120px; border-radius: 50%; background: conic-gradient(#00c9a7 0% 68%, #1e293b 68% 100%); display: flex; align-items: center; justify-content: center; position: relative; }
+  .ring-inner { width: 90px; height: 90px; border-radius: 50%; background: #1e293b; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-val { font-size: 26px; font-weight: 900; color: #00c9a7; }
+  .ring-sub { font-size: 10px; color: #64748b; }
+  .ring-lbl { font-size: 13px; font-weight: 700; color: #e2e8f0; margin-top: 12px; }
+  .ring-desc { font-size: 11px; color: #64748b; text-align: center; margin-top: 4px; max-width: 200px; }
+
+
+  /* ======================================
+     案③: SubLife
+  ====================================== */
+  #view3 { min-height: 100vh; background: #fff8f5; }
+  .v3-header {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    padding: 20px 32px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  .v3-logo { font-size: 22px; font-weight: 800; color: #fff; }
+  .v3-logo-tag { font-size: 11px; color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 10px; margin-left: 10px; }
+  .v3-review-btn { background: #fff; color: #ee5a24; padding: 9px 18px; border-radius: 20px; border: none; font-size: 13px; font-weight: 800; cursor: pointer; }
+
+  .v3-body { max-width: 980px; margin: 0 auto; padding: 28px 20px; }
+
+  .v3-review-banner { background: linear-gradient(135deg, #ff6b6b15, #ee5a2415); border: 2px solid #ff6b6b40; border-radius: 16px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .v3-banner-icon { font-size: 32px; }
+  .v3-banner-text h3 { font-size: 15px; font-weight: 800; color: #ee5a24; }
+  .v3-banner-text p { font-size: 12px; color: #888; margin-top: 4px; }
+  .v3-banner-btn { margin-left: auto; background: #ff6b6b; color: #fff; padding: 10px 20px; border-radius: 12px; border: none; font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+
+  .v3-cats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .v3-cat { background: #fff; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden; }
+  .v3-cat-header { padding: 16px 20px; display: flex; align-items: center; gap: 12px; }
+  .v3-cat-emoji { font-size: 24px; }
+  .v3-cat-name { font-size: 14px; font-weight: 800; }
+  .v3-cat-total { margin-left: auto; font-size: 14px; font-weight: 900; }
+  .v3-cat-work .v3-cat-header   { background: #eef2ff; }
+  .v3-cat-health .v3-cat-header { background: #ecfdf5; }
+  .v3-cat-ent .v3-cat-header    { background: #fff7ed; }
+  .v3-cat-learn .v3-cat-header  { background: #fdf4ff; }
+  .v3-cat-work   .v3-cat-name, .v3-cat-work   .v3-cat-total { color: #3b6cf6; }
+  .v3-cat-health .v3-cat-name, .v3-cat-health .v3-cat-total { color: #059669; }
+  .v3-cat-ent    .v3-cat-name, .v3-cat-ent    .v3-cat-total { color: #ea580c; }
+  .v3-cat-learn  .v3-cat-name, .v3-cat-learn  .v3-cat-total { color: #9333ea; }
+
+  .v3-sub-item { padding: 13px 20px; border-top: 1px solid #f5f5f5; }
+  .v3-sub-row { display: flex; align-items: center; justify-content: space-between; }
+  .v3-sub-name { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+  .v3-sub-cost { font-size: 13px; font-weight: 800; color: #444; }
+  .v3-sub-meta { display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+  .v3-freq { font-size: 11px; color: #888; }
+  .v3-usage-bar { flex: 1; height: 4px; background: #eee; border-radius: 2px; min-width: 60px; }
+  .v3-usage-fill { height: 4px; border-radius: 2px; }
+  .v3-cat-work   .v3-usage-fill { background: #6c63ff; }
+  .v3-cat-health .v3-usage-fill { background: #059669; }
+  .v3-cat-ent    .v3-usage-fill { background: #ea580c; }
+  .v3-cat-learn  .v3-usage-fill { background: #9333ea; }
+
+  .v3-footer { margin-top: 28px; background: #fff; border-radius: 20px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .v3-footer-stat { text-align: center; }
+  .v3-footer-val { font-size: 26px; font-weight: 900; color: #ff6b6b; }
+  .v3-footer-lbl { font-size: 11px; color: #888; margin-top: 4px; }
+  .v3-divider { width: 1px; height: 50px; background: #eee; }
+  .v3-score-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .v3-lifestyle-score { }
+  .v3-ls-lbl { font-size: 12px; color: #888; margin-bottom: 8px; font-weight: 700; }
+  .v3-ls-bars { display: flex; flex-direction: column; gap: 6px; }
+  .v3-ls-row { display: flex; align-items: center; gap: 10px; }
+  .v3-ls-name { font-size: 11px; color: #666; width: 50px; }
+  .v3-ls-bar-bg { flex: 1; height: 8px; background: #eee; border-radius: 4px; }
+  .v3-ls-bar-fill { height: 8px; border-radius: 4px; }
+  .v3-ls-pct { font-size: 11px; color: #888; width: 32px; text-align: right; }
+
+</style>
+</head>
+<body>
+
+<!-- APP SWITCHER -->
+<div class="app-switcher">
+  <span class="switcher-label">UIモックアップを選択 →</span>
+  <button class="switch-btn active-1" onclick="showApp(1)">① SubTracker</button>
+  <button class="switch-btn" onclick="showApp(2)">② ROI Compass</button>
+  <button class="switch-btn" onclick="showApp(3)">③ SubLife</button>
+</div>
+
+
+<!-- ==============================
+     案① SubTracker
+============================== -->
+<div id="view1" class="app-view active">
+  <!-- Header -->
+  <div class="v1-header">
+    <div>
+      <div class="v1-logo">SubTracker <span>サブスク収支管理</span></div>
+    </div>
+    <div class="v1-header-stats">
+      <div class="v1-stat">
+        <div class="v1-stat-val">¥12,480</div>
+        <div class="v1-stat-lbl">今月の合計</div>
+      </div>
+      <div class="v1-stat">
+        <div class="v1-stat-val">¥149,760</div>
+        <div class="v1-stat-lbl">年間換算</div>
+      </div>
+      <div class="v1-stat">
+        <div class="v1-stat-val">8</div>
+        <div class="v1-stat-lbl">契約中</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v1-body">
+    <!-- Cards -->
+    <div class="v1-cards">
+      <div class="v1-card">
+        <div class="v1-card-icon">💼</div>
+        <div class="v1-card-val">¥6,280</div>
+        <div class="v1-card-lbl">仕事カテゴリ</div>
+        <div class="v1-card-sub">↑ 先月比 +¥500</div>
+      </div>
+      <div class="v1-card">
+        <div class="v1-card-icon">🎬</div>
+        <div class="v1-card-val">¥3,200</div>
+        <div class="v1-card-lbl">エンタメ</div>
+        <div class="v1-card-sub">変動なし</div>
+      </div>
+      <div class="v1-card">
+        <div class="v1-card-icon">📚</div>
+        <div class="v1-card-val">¥2,000</div>
+        <div class="v1-card-lbl">学習</div>
+        <div class="v1-card-sub">↓ 先月比 -¥480</div>
+      </div>
+      <div class="v1-card">
+        <div class="v1-card-icon">❤️</div>
+        <div class="v1-card-val">¥1,000</div>
+        <div class="v1-card-lbl">健康</div>
+        <div class="v1-card-sub">変動なし</div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="v1-section-title">サブスク一覧</div>
+    <div class="v1-filter">
+      <button class="v1-filter-btn sel">すべて</button>
+      <button class="v1-filter-btn">仕事</button>
+      <button class="v1-filter-btn">エンタメ</button>
+      <button class="v1-filter-btn">学習</button>
+      <button class="v1-filter-btn">健康</button>
+    </div>
+
+    <div class="v1-table-wrap">
+      <table class="v1-table">
+        <thead>
+          <tr>
+            <th>購入項目</th>
+            <th>月次費用</th>
+            <th>投資目的</th>
+            <th>投資対効果</th>
+            <th style="width:130px;">コスト比率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="v1-item-name">🤖 Claude Pro</div>
+              <div class="v1-item-sub">AI / 仕事</div>
+            </td>
+            <td><span class="v1-cost">¥3,000</span></td>
+            <td><span class="v1-purpose">業務効率化・コード生成</span></td>
+            <td><span class="tag tag-high">高</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">24%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:70%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">🎵 Spotify Premium</div>
+              <div class="v1-item-sub">音楽 / エンタメ</div>
+            </td>
+            <td><span class="v1-cost">¥980</span></td>
+            <td><span class="v1-purpose">作業BGM・リラックス</span></td>
+            <td><span class="tag tag-high">高</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">8%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:22%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">📐 Figma Pro</div>
+              <div class="v1-item-sub">デザイン / 仕事</div>
+            </td>
+            <td><span class="v1-cost">¥2,000</span></td>
+            <td><span class="v1-purpose">UIデザイン・プロトタイプ</span></td>
+            <td><span class="tag tag-high">高</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">16%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:46%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">☁️ Notion Plus</div>
+              <div class="v1-item-sub">メモ / 仕事</div>
+            </td>
+            <td><span class="v1-cost">¥1,280</span></td>
+            <td><span class="v1-purpose">ドキュメント管理</span></td>
+            <td><span class="tag tag-mid">中</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">10%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:30%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">🎬 Netflix</div>
+              <div class="v1-item-sub">動画 / エンタメ</div>
+            </td>
+            <td><span class="v1-cost">¥1,490</span></td>
+            <td><span class="v1-purpose">映画・ドラマ視聴</span></td>
+            <td><span class="tag tag-mid">中</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">12%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:34%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">📖 Udemy</div>
+              <div class="v1-item-sub">学習 / スキルアップ</div>
+            </td>
+            <td><span class="v1-cost">¥2,000</span></td>
+            <td><span class="v1-purpose">プログラミング学習</span></td>
+            <td><span class="tag tag-low">低</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">16%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:46%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">🏋️ ライザップ App</div>
+              <div class="v1-item-sub">健康 / フィットネス</div>
+            </td>
+            <td><span class="v1-cost">¥1,000</span></td>
+            <td><span class="v1-purpose">自宅トレーニング</span></td>
+            <td><span class="tag tag-mid">中</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">8%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:22%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="v1-item-name">🗃️ Dropbox Plus</div>
+              <div class="v1-item-sub">ストレージ / 仕事</div>
+            </td>
+            <td><span class="v1-cost">¥730</span></td>
+            <td><span class="v1-purpose">ファイル共有・バックアップ</span></td>
+            <td><span class="tag tag-low">低</span></td>
+            <td>
+              <div class="v1-bar-wrap">
+                <div style="font-size:11px;color:#888;">6%</div>
+                <div class="v1-bar-bg"><div class="v1-bar" style="width:16%;"></div></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="v1-total-row">
+            <td>合計</td>
+            <td><span class="v1-cost">¥12,480</span></td>
+            <td colspan="3" style="color:#888;font-size:12px;font-weight:400;">年間換算：¥149,760</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bar Chart -->
+    <div class="v1-chart-wrap">
+      <div class="v1-chart-title">カテゴリ別支出</div>
+      <div class="v1-chart-row">
+        <div class="v1-chart-lbl">仕事</div>
+        <div class="v1-chart-bar" style="width:55%;background:linear-gradient(90deg,#6c63ff,#a29bfe);">¥6,280</div>
+      </div>
+      <div class="v1-chart-row">
+        <div class="v1-chart-lbl">エンタメ</div>
+        <div class="v1-chart-bar" style="width:30%;background:linear-gradient(90deg,#fd79a8,#fdcb6e);">¥3,200</div>
+      </div>
+      <div class="v1-chart-row">
+        <div class="v1-chart-lbl">学習</div>
+        <div class="v1-chart-bar" style="width:24%;background:linear-gradient(90deg,#0984e3,#74b9ff);">¥2,000</div>
+      </div>
+      <div class="v1-chart-row">
+        <div class="v1-chart-lbl">健康</div>
+        <div class="v1-chart-bar" style="width:12%;background:linear-gradient(90deg,#00b894,#55efc4);">¥1,000</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==============================
+     案② ROI Compass
+============================== -->
+<div id="view2" class="app-view">
+  <div class="v2-header">
+    <div>
+      <div class="v2-logo">ROI Compass</div>
+      <div class="v2-logo-sub">投資対効果 サブスク分析</div>
+    </div>
+    <div class="v2-nav">
+      <button class="v2-nav-btn sel">ダッシュボード</button>
+      <button class="v2-nav-btn">分析レポート</button>
+      <button class="v2-nav-btn">履歴</button>
+    </div>
+  </div>
+
+  <div class="v2-body">
+    <!-- Hero Stats -->
+    <div class="v2-hero">
+      <div class="v2-hero-card v2-hc-blue">
+        <div class="val">¥12,480</div>
+        <div class="lbl">月次総費用</div>
+        <div class="sub">8件のサブスク</div>
+      </div>
+      <div class="v2-hero-card v2-hc-green">
+        <div class="val">5件</div>
+        <div class="lbl">ROI 高 — 維持推奨</div>
+        <div class="sub">¥8,260 / 月</div>
+      </div>
+      <div class="v2-hero-card v2-hc-yellow">
+        <div class="val">1件</div>
+        <div class="lbl">ROI 中 — 要観察</div>
+        <div class="sub">¥2,490 / 月</div>
+      </div>
+      <div class="v2-hero-card v2-hc-red">
+        <div class="val">2件</div>
+        <div class="lbl">ROI 低 — 解約候補</div>
+        <div class="sub">¥1,730 / 月 の節約余地</div>
+      </div>
+    </div>
+
+    <div class="v2-grid">
+      <!-- Subscription List -->
+      <div>
+        <div class="v2-section">
+          <div class="v2-section-head">
+            <h3>すべてのサブスク</h3>
+            <span class="v2-badge v2-badge-ok">8件 管理中</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#1a1a3e;">🤖</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Claude Pro</div>
+              <div class="v2-item-purpose">業務効率化・コード生成</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥3,000</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-high">ROI 高</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#1a2e1a;">📐</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Figma Pro</div>
+              <div class="v2-item-purpose">UIデザイン・プロトタイプ</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥2,000</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-high">ROI 高</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#2e1a1a;">🎵</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Spotify Premium</div>
+              <div class="v2-item-purpose">作業BGM・リラックス</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥980</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-high">ROI 高</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#1a2a2e;">🏋️</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">ライザップ App</div>
+              <div class="v2-item-purpose">自宅トレーニング</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥1,000</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-mid">ROI 中</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#2e2a1a;">🎬</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Netflix</div>
+              <div class="v2-item-purpose">映画・ドラマ視聴</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥1,490</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-mid">ROI 中</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#2a1a2e;">☁️</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Notion Plus</div>
+              <div class="v2-item-purpose">ドキュメント管理</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥1,280</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-high">ROI 高</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#2e1a1a;">📖</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Udemy</div>
+              <div class="v2-item-purpose">プログラミング学習</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥2,000</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-low">ROI 低</span>
+          </div>
+
+          <div class="v2-item">
+            <div class="v2-item-icon" style="background:#1e2e2e;">🗃️</div>
+            <div class="v2-item-info">
+              <div class="v2-item-name">Dropbox Plus</div>
+              <div class="v2-item-purpose">ファイル共有・バックアップ</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="v2-item-cost">¥730</div>
+              <div class="v2-item-cost-lbl">/月</div>
+            </div>
+            <span class="v2-roi-pill roi-low">ROI 低</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- ROI Score Ring -->
+        <div class="v2-section">
+          <div class="v2-section-head"><h3>総合ROIスコア</h3></div>
+          <div class="v2-score-ring">
+            <div class="ring-outer">
+              <div class="ring-inner">
+                <div class="ring-val">68</div>
+                <div class="ring-sub">/ 100</div>
+              </div>
+            </div>
+            <div class="ring-lbl">コスパ評価：良好</div>
+            <div class="ring-desc">全体的にROIは良好ですが、2件の解約で月¥1,730の節約が可能です</div>
+          </div>
+        </div>
+
+        <!-- Cancel Alerts -->
+        <div class="v2-section">
+          <div class="v2-section-head">
+            <h3>⚠️ 解約候補</h3>
+            <span class="v2-badge v2-badge-alert">2件</span>
+          </div>
+          <div class="v2-alert-item">
+            <div class="v2-alert-name">📖 Udemy</div>
+            <div class="v2-alert-reason">先月の利用：2時間 / 月額¥2,000</div>
+            <div class="v2-alert-cost">時間単価 ¥1,000/h → コスパ不良</div>
+            <div class="v2-alert-action"><button class="v2-btn-cancel">解約を検討する</button></div>
+          </div>
+          <div class="v2-alert-item">
+            <div class="v2-alert-name">🗃️ Dropbox Plus</div>
+            <div class="v2-alert-reason">Google Driveで代替可能</div>
+            <div class="v2-alert-cost">¥730/月 → 年間¥8,760 の節約余地</div>
+            <div class="v2-alert-action"><button class="v2-btn-cancel">解約を検討する</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==============================
+     案③ SubLife
+============================== -->
+<div id="view3" class="app-view">
+  <div class="v3-header">
+    <div style="display:flex;align-items:center;">
+      <div class="v3-logo">SubLife</div>
+      <span class="v3-logo-tag">ライフスタイル最適化</span>
+    </div>
+    <button class="v3-review-btn">📋 今月のレビュー開始</button>
+  </div>
+
+  <div class="v3-body">
+    <!-- Review Banner -->
+    <div class="v3-review-banner">
+      <div class="v3-banner-icon">🔔</div>
+      <div class="v3-banner-text">
+        <h3>月次レビューのお時間です！</h3>
+        <p>先月のサブスク利用状況を振り返って、必要なものだけ残しましょう</p>
+      </div>
+      <button class="v3-banner-btn">レビューする →</button>
+    </div>
+
+    <!-- Category Cards -->
+    <div class="v3-cats">
+      <!-- 仕事 -->
+      <div class="v3-cat v3-cat-work">
+        <div class="v3-cat-header">
+          <span class="v3-cat-emoji">💼</span>
+          <span class="v3-cat-name">仕事・生産性</span>
+          <span class="v3-cat-total">¥7,280</span>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">🤖 Claude Pro</span>
+            <span class="v3-sub-cost">¥3,000</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-high" style="font-size:10px;">ROI 高</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:95%;"></div></div>
+            <span class="v3-freq">毎日使用</span>
+          </div>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">📐 Figma Pro</span>
+            <span class="v3-sub-cost">¥2,000</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-high" style="font-size:10px;">ROI 高</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:80%;"></div></div>
+            <span class="v3-freq">週4〜5回</span>
+          </div>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">☁️ Notion Plus</span>
+            <span class="v3-sub-cost">¥1,280</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-mid" style="font-size:10px;">ROI 中</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:55%;"></div></div>
+            <span class="v3-freq">週2〜3回</span>
+          </div>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">🗃️ Dropbox Plus</span>
+            <span class="v3-sub-cost">¥730</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-low" style="font-size:10px;">ROI 低</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:15%;"></div></div>
+            <span class="v3-freq">ほぼ未使用</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- エンタメ -->
+      <div class="v3-cat v3-cat-ent">
+        <div class="v3-cat-header">
+          <span class="v3-cat-emoji">🎬</span>
+          <span class="v3-cat-name">エンタメ</span>
+          <span class="v3-cat-total">¥2,470</span>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">🎵 Spotify</span>
+            <span class="v3-sub-cost">¥980</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-high" style="font-size:10px;">ROI 高</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:100%;"></div></div>
+            <span class="v3-freq">毎日使用</span>
+          </div>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">🎬 Netflix</span>
+            <span class="v3-sub-cost">¥1,490</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-mid" style="font-size:10px;">ROI 中</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:45%;"></div></div>
+            <span class="v3-freq">週1〜2回</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 学習 -->
+      <div class="v3-cat v3-cat-learn">
+        <div class="v3-cat-header">
+          <span class="v3-cat-emoji">📚</span>
+          <span class="v3-cat-name">学習</span>
+          <span class="v3-cat-total">¥2,000</span>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">📖 Udemy</span>
+            <span class="v3-sub-cost">¥2,000</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-low" style="font-size:10px;">ROI 低</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:20%;"></div></div>
+            <span class="v3-freq">月2〜3回</span>
+          </div>
+        </div>
+        <div style="padding:14px 20px;font-size:12px;color:#9333ea;background:#fdf4ff;cursor:pointer;">
+          ＋ 新しい学習サービスを追加
+        </div>
+      </div>
+
+      <!-- 健康 -->
+      <div class="v3-cat v3-cat-health">
+        <div class="v3-cat-header">
+          <span class="v3-cat-emoji">❤️</span>
+          <span class="v3-cat-name">健康</span>
+          <span class="v3-cat-total">¥1,000</span>
+        </div>
+        <div class="v3-sub-item">
+          <div class="v3-sub-row">
+            <span class="v3-sub-name">🏋️ ライザップ App</span>
+            <span class="v3-sub-cost">¥1,000</span>
+          </div>
+          <div class="v3-sub-meta">
+            <span class="tag tag-mid" style="font-size:10px;">ROI 中</span>
+            <div class="v3-usage-bar"><div class="v3-usage-fill" style="width:60%;"></div></div>
+            <span class="v3-freq">週3〜4回</span>
+          </div>
+        </div>
+        <div style="padding:14px 20px;font-size:12px;color:#059669;background:#ecfdf5;cursor:pointer;">
+          ＋ 健康サービスを追加
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Summary -->
+    <div class="v3-footer">
+      <div class="v3-footer-stat">
+        <div class="v3-footer-val">¥12,480</div>
+        <div class="v3-footer-lbl">今月の合計</div>
+      </div>
+      <div class="v3-divider"></div>
+      <div class="v3-footer-stat">
+        <div class="v3-footer-val" style="color:#059669;">¥2,730</div>
+        <div class="v3-footer-lbl">解約で節約できる額</div>
+      </div>
+      <div class="v3-divider"></div>
+      <div class="v3-lifestyle-score">
+        <div class="v3-ls-lbl">ライフスタイル別 支出比率</div>
+        <div class="v3-ls-bars">
+          <div class="v3-ls-row">
+            <span class="v3-ls-name">仕事</span>
+            <div class="v3-ls-bar-bg"><div class="v3-ls-bar-fill" style="width:58%;background:#6c63ff;"></div></div>
+            <span class="v3-ls-pct">58%</span>
+          </div>
+          <div class="v3-ls-row">
+            <span class="v3-ls-name">エンタメ</span>
+            <div class="v3-ls-bar-bg"><div class="v3-ls-bar-fill" style="width:20%;background:#ea580c;"></div></div>
+            <span class="v3-ls-pct">20%</span>
+          </div>
+          <div class="v3-ls-row">
+            <span class="v3-ls-name">学習</span>
+            <div class="v3-ls-bar-bg"><div class="v3-ls-bar-fill" style="width:16%;background:#9333ea;"></div></div>
+            <span class="v3-ls-pct">16%</span>
+          </div>
+          <div class="v3-ls-row">
+            <span class="v3-ls-name">健康</span>
+            <div class="v3-ls-bar-bg"><div class="v3-ls-bar-fill" style="width:8%;background:#059669;"></div></div>
+            <span class="v3-ls-pct">8%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function showApp(n) {
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.switch-btn').forEach(b => {
+      b.classList.remove('active-1','active-2','active-3');
+    });
+    document.getElementById('view' + n).classList.add('active');
+    const btns = document.querySelectorAll('.switch-btn');
+    btns[n-1].classList.add('active-' + n);
+  }
+</script>
+</body>
+</html>
