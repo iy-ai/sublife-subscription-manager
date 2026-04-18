@@ -564,10 +564,13 @@ sb.auth.onAuthStateChange(async (event, session) => {
     document.getElementById('user-badge').textContent = '👤 ' + currentUser.email;
     document.getElementById('auth-overlay').classList.add('hidden');
     showLoading(true, 'データを読み込み中...');
-    try {
-      await loadSubs();
+try {
+      await Promise.race([
+        loadSubs(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
+      ]);
     } catch(e) {
-      console.error('loadSubs failed:', e);
+      console.error('load error:', e);
     } finally {
       showLoading(false);
     }
