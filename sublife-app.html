@@ -242,78 +242,6 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
 .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: #fff; padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.2); z-index: 300; transform: translateY(100px); opacity: 0; transition: all 0.3s; }
 .toast.show { transform: translateY(0); opacity: 1; }
 
-/* ===== CANDIDATES PAGE ===== */
-.cand-toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-
-/* 予算シミュレーター */
-.budget-sim {
-  background: linear-gradient(135deg, #f0f4ff, #e8edff);
-  border: 1.5px solid #c7d4ff;
-  border-radius: 18px; padding: 20px 24px; margin-bottom: 24px;
-  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
-}
-.budget-sim-icon { font-size: 32px; }
-.budget-sim-body { flex: 1; }
-.budget-sim-title { font-size: 13px; font-weight: 800; color: #3b6cf6; margin-bottom: 10px; }
-.budget-sim-rows { display: flex; flex-wrap: wrap; gap: 20px; }
-.budget-sim-item { text-align: center; }
-.budget-sim-val { font-size: 20px; font-weight: 900; }
-.budget-sim-lbl { font-size: 10px; color: #888; margin-top: 2px; }
-.bsv-current  { color: #ee5a24; }
-.bsv-add      { color: #3b6cf6; }
-.bsv-total    { color: #d63031; }
-.budget-sim-arrow { font-size: 18px; color: #aaa; align-self: center; }
-
-/* 検討カードグリッド */
-.cand-grid { display: grid; gap: 14px; }
-.cand-card {
-  background: #fff; border-radius: 18px; padding: 18px 20px;
-  box-shadow: 0 2px 14px rgba(0,0,0,0.06);
-  border-left: 4px solid #c7d4ff;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.cand-card.status-trial  { border-left-color: #f59e0b; }
-.cand-card.status-hold   { border-left-color: #aaa; }
-.cand-card.status-pass   { border-left-color: #d1d5db; opacity: 0.6; }
-
-.cand-top { display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-.cand-info { flex: 1; min-width: 160px; }
-.cand-name { font-size: 15px; font-weight: 800; color: #1a1a2e; }
-.cand-cat  { font-size: 11px; color: #999; margin-top: 2px; }
-.cand-cost { font-size: 18px; font-weight: 900; color: #3b6cf6; white-space: nowrap; }
-.cand-cost-lbl { font-size: 10px; color: #aaa; font-weight: 400; }
-
-.cand-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.tag-priority-high   { background: #ffe0e0; color: #d63031; }
-.tag-priority-mid    { background: #fff3cd; color: #e67e22; }
-.tag-priority-low    { background: #e8eaf6; color: #5c6bc0; }
-.tag-status-pending  { background: #e8edff; color: #3b6cf6; }
-.tag-status-trial    { background: #fef3c7; color: #d97706; }
-.tag-status-hold     { background: #f3f4f6; color: #6b7280; }
-.tag-status-pass     { background: #f3f4f6; color: #9ca3af; }
-.tag-trial           { background: #ecfdf5; color: #059669; }
-
-.cand-reason { font-size: 12px; color: #666; line-height: 1.5; }
-.cand-memo   { font-size: 11px; color: #aaa; }
-.trial-alert { font-size: 11px; color: #d97706; font-weight: 700; background: #fef3c7; padding: 4px 10px; border-radius: 8px; display: inline-block; }
-
-.cand-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.cand-btn { padding: 7px 14px; border-radius: 12px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
-.cand-btn:hover { opacity: 0.8; }
-.cand-edit    { background: #f0f0f0; color: #555; }
-.cand-delete  { background: #ffe0e0; color: #d63031; }
-.cand-promote { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; }
-.cand-hold    { background: #f3f4f6; color: #6b7280; }
-.cand-trial-btn { background: #fef3c7; color: #d97706; }
-.cand-pass    { background: #f3f4f6; color: #9ca3af; }
-
-.cand-empty { text-align: center; color: #aaa; padding: 48px 20px; font-size: 14px; }
-
-/* ステータスフィルタータブ */
-.status-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-.status-tab { padding: 6px 16px; border: 1.5px solid #eee; border-radius: 20px; background: #fff; font-size: 12px; font-weight: 600; color: #888; cursor: pointer; }
-.status-tab.sel { background: #3b6cf6; color: #fff; border-color: #3b6cf6; }
-
 /* Responsive */
 @media (max-width: 600px) {
   .header { padding: 0 16px; }
@@ -365,7 +293,6 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
   <div class="nav-tab active" onclick="showPage('dashboard')">🏠 ダッシュボード</div>
   <div class="nav-tab" onclick="showPage('list')">📋 一覧・管理</div>
   <div class="nav-tab" onclick="showPage('review')">🔍 月次レビュー</div>
-  <div class="nav-tab" onclick="showPage('candidates')">⭐ 検討中</div>
 </div>
 
 <div class="main">
@@ -414,12 +341,6 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
         <div class="sc-icon">🏆</div>
         <div class="sc-val c-green" id="high-roi-display">0</div>
         <div class="sc-lbl">ROI高 — 維持推奨</div>
-      </div>
-      <div class="summary-card" onclick="showPage('candidates')" style="cursor:pointer;">
-        <div class="sc-icon">⭐</div>
-        <div class="sc-val" style="color:#3b6cf6;" id="cand-count-display">0</div>
-        <div class="sc-lbl">検討中サービス数</div>
-        <div class="sc-sub" id="cand-cost-display" style="color:#3b6cf6;"></div>
       </div>
     </div>
     <div class="section-head">
@@ -481,53 +402,6 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
     </div>
     <div class="review-grid" id="review-grid"></div>
   </div>
-
-  <!-- ===== CANDIDATES PAGE ===== -->
-  <div id="page-candidates" class="page">
-    <div class="section-head" style="margin-bottom:16px;">
-      <div class="section-title">検討中サービス</div>
-      <button class="add-btn" style="background:#3b6cf6;" onclick="openCandModal()">⭐ 候補を追加</button>
-    </div>
-
-    <!-- 予算シミュレーター -->
-    <div class="budget-sim" id="budget-sim">
-      <div class="budget-sim-icon">📊</div>
-      <div class="budget-sim-body">
-        <div class="budget-sim-title">予算シミュレーター — 検討中を全契約した場合</div>
-        <div class="budget-sim-rows">
-          <div class="budget-sim-item">
-            <div class="budget-sim-val bsv-current" id="sim-current">¥0</div>
-            <div class="budget-sim-lbl">現在の月額</div>
-          </div>
-          <div class="budget-sim-arrow">＋</div>
-          <div class="budget-sim-item">
-            <div class="budget-sim-val bsv-add" id="sim-add">¥0</div>
-            <div class="budget-sim-lbl">検討中の合計</div>
-          </div>
-          <div class="budget-sim-arrow">＝</div>
-          <div class="budget-sim-item">
-            <div class="budget-sim-val bsv-total" id="sim-total">¥0</div>
-            <div class="budget-sim-lbl">追加後の月額</div>
-          </div>
-          <div class="budget-sim-item" style="margin-left:8px;">
-            <div class="budget-sim-val" style="color:#6b7280;font-size:14px;" id="sim-yearly">年間 ¥0</div>
-            <div class="budget-sim-lbl">追加後の年間換算</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ステータスフィルター -->
-    <div class="status-tabs">
-      <div class="status-tab sel" data-st="all" onclick="setCandFilter('all')">すべて</div>
-      <div class="status-tab" data-st="pending" onclick="setCandFilter('pending')">🔵 検討中</div>
-      <div class="status-tab" data-st="trial" onclick="setCandFilter('trial')">🟡 試用中</div>
-      <div class="status-tab" data-st="hold" onclick="setCandFilter('hold')">⏸ 保留</div>
-      <div class="status-tab" data-st="pass" onclick="setCandFilter('pass')">✖ 見送り</div>
-    </div>
-
-    <div class="cand-grid" id="cand-grid"></div>
-  </div>
 </div>
 
 <!-- ===== ADD/EDIT MODAL ===== -->
@@ -586,105 +460,12 @@ body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #fff8f5
   </div>
 </div>
 
-<!-- ===== CANDIDATE ADD/EDIT MODAL ===== -->
-<div class="modal-overlay" id="cand-modal" onclick="closeCandModalOutside(event)">
-  <div class="modal" style="max-width:520px;">
-    <h2 id="cand-modal-title">⭐ 検討候補を追加</h2>
-    <input type="hidden" id="cand-edit-id" value="">
-    <div class="form-group">
-      <label class="form-label">サービス名 *</label>
-      <input class="form-input" id="cf-name" placeholder="例: Netflix, Notion AI" />
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">想定月額（円）*</label>
-        <input class="form-input" id="cf-cost" type="number" placeholder="1490" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">カテゴリ</label>
-        <select class="form-select" id="cf-cat">
-          <option value="work">💼 仕事・生産性</option>
-          <option value="ent">🎬 エンタメ</option>
-          <option value="learn">📚 学習</option>
-          <option value="health">❤️ 健康</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">検討理由・目的</label>
-      <input class="form-input" id="cf-reason" placeholder="例: 家族で動画を楽しみたい" />
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">優先度</label>
-        <select class="form-select" id="cf-priority">
-          <option value="high">★★★ 高</option>
-          <option value="mid" selected>★★☆ 中</option>
-          <option value="low">★☆☆ 低</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">ステータス</label>
-        <select class="form-select" id="cf-status" onchange="toggleTrialDate()">
-          <option value="pending">🔵 検討中</option>
-          <option value="trial">🟡 試用中</option>
-          <option value="hold">⏸ 保留</option>
-          <option value="pass">✖ 見送り</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">無料トライアル</label>
-        <select class="form-select" id="cf-trial" onchange="toggleTrialDate()">
-          <option value="false">なし</option>
-          <option value="true">あり</option>
-        </select>
-      </div>
-      <div class="form-group" id="trial-date-group" style="display:none;">
-        <label class="form-label">トライアル期限</label>
-        <input class="form-input" id="cf-trial-end" type="date" />
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">メモ</label>
-      <input class="form-input" id="cf-memo" placeholder="気になる点や比較メモなど" />
-    </div>
-    <div class="modal-actions">
-      <button class="modal-cancel" onclick="closeCandModal()">キャンセル</button>
-      <button class="modal-save" id="cand-save-btn" onclick="saveCand()" style="background:#3b6cf6;">保存する</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
 // ★ Supabase 設定 — 自分のプロジェクトの値に変更してください
 // ============================================================
-/*
-  ★ Supabase に追加が必要なテーブル（SQL Editor で実行してください）
-
-  CREATE TABLE subscription_candidates (
-    id          uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id     uuid REFERENCES auth.users NOT NULL,
-    name        text NOT NULL,
-    est_cost    integer NOT NULL DEFAULT 0,
-    cat         text NOT NULL DEFAULT 'work',
-    reason      text,
-    priority    text NOT NULL DEFAULT 'mid',
-    trial       boolean NOT NULL DEFAULT false,
-    trial_end   date,
-    status      text NOT NULL DEFAULT 'pending',
-    memo        text,
-    created_at  timestamptz DEFAULT now()
-  );
-  ALTER TABLE subscription_candidates ENABLE ROW LEVEL SECURITY;
-  CREATE POLICY "own rows" ON subscription_candidates
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
-*/
 const SUPABASE_URL = 'https://wzwsfoluztgqbflzpyot.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6d3Nmb2x1enRncWJmbHpweW90Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0ODI1NjcsImV4cCI6MjA5MjA1ODU2N30.3wWYOgrfyN0GlQM5fRr7RQMO4kLqGas4_VOP0JWgVCc';
 // ============================================================
@@ -703,9 +484,7 @@ const FREQ_LABELS = { '100':'毎日使用','80':'週4〜5回','55':'週2〜3回'
 const ROI_LABELS  = { high:'高', mid:'中', low:'低' };
 
 let subs = [];
-let candidates = [];
 let listFilter = 'all';
-let candFilter = 'all';
 let currentUser = null;
 let authMode = 'login';
 
@@ -787,9 +566,8 @@ sb.auth.onAuthStateChange(async (event, session) => {
     showLoading(true, 'データを読み込み中...');
     try {
       await loadSubs();
-      await loadCandidates();
     } catch(e) {
-      console.error('load failed:', e);
+      console.error('loadSubs failed:', e);
     } finally {
       showLoading(false);
     }
@@ -853,30 +631,6 @@ async function loadSubs() {
   }
 }
 
-async function loadCandidates() {
-  try {
-    const { data, error } = await sb
-      .from('subscription_candidates')
-      .select('*')
-      .order('created_at', { ascending: true });
-    if (error) {
-      if (error.code !== '42P01' && !error.message.includes('does not exist')) {
-        console.error('loadCandidates error:', error);
-      }
-      return;
-    }
-    candidates = (data || []).map(r => ({
-      id: r.id, name: r.name, est_cost: r.est_cost,
-      cat: r.cat, reason: r.reason || '',
-      priority: r.priority, trial: r.trial,
-      trial_end: r.trial_end || null,
-      status: r.status, memo: r.memo || '',
-    }));
-  } catch(e) {
-    console.error('loadCandidates exception:', e);
-  }
-}
-
 async function dbInsert(obj) {
   const { data, error } = await sb
     .from('subscriptions')
@@ -915,34 +669,6 @@ async function dbDelete(id) {
   if (error) throw error;
 }
 
-async function dbInsertCand(obj) {
-  const { data, error } = await sb
-    .from('subscription_candidates')
-    .insert([{ ...obj, user_id: currentUser.id }])
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
-}
-
-async function dbUpdateCand(id, obj) {
-  const { error } = await sb
-    .from('subscription_candidates')
-    .update(obj)
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
-  if (error) throw error;
-}
-
-async function dbDeleteCand(id) {
-  const { error } = await sb
-    .from('subscription_candidates')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
-  if (error) throw error;
-}
-
 // ===== COMPUTED =====
 function totalCost() { return subs.reduce((s,x)=>s+x.cost,0); }
 function lowRoiSubs() { return subs.filter(x=>x.roi==='low'); }
@@ -959,9 +685,6 @@ function renderAll() {
   renderList();
   renderReview();
   renderFooter();
-  renderCandSummary();
-  renderCandidates();
-  renderBudgetSim();
 }
 
 function renderSummary() {
@@ -1087,249 +810,6 @@ function renderFooter() {
   }).join('');
 }
 
-// ===== CANDIDATES RENDER =====
-const PRIORITY_LABELS = { high:'★★★ 高', mid:'★★☆ 中', low:'★☆☆ 低' };
-const STATUS_LABELS   = { pending:'🔵 検討中', trial:'🟡 試用中', hold:'⏸ 保留', pass:'✖ 見送り' };
-
-function candActiveCost() {
-  return candidates.filter(c => c.status !== 'pass').reduce((s,c) => s + c.est_cost, 0);
-}
-
-function renderCandSummary() {
-  const active = candidates.filter(c => c.status !== 'pass');
-  document.getElementById('cand-count-display').textContent = active.length + '件';
-  const cost = active.reduce((s,c) => s + c.est_cost, 0);
-  document.getElementById('cand-cost-display').textContent = cost > 0 ? '想定 ' + fmt(cost) + '/月' : '';
-}
-
-function renderBudgetSim() {
-  const current = totalCost();
-  const add     = candActiveCost();
-  const total   = current + add;
-  document.getElementById('sim-current').textContent = fmt(current);
-  document.getElementById('sim-add').textContent     = fmt(add);
-  document.getElementById('sim-total').textContent   = fmt(total);
-  document.getElementById('sim-yearly').textContent  = '年間 ' + fmt(total * 12);
-}
-
-function daysUntil(dateStr) {
-  if (!dateStr) return null;
-  const diff = new Date(dateStr) - new Date();
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
-
-function renderCandidates() {
-  const grid = document.getElementById('cand-grid');
-  if (!grid) return;
-  const filtered = candidates.filter(c => candFilter === 'all' || c.status === candFilter);
-
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="cand-empty">
-      ${candidates.length === 0
-        ? '⭐ まだ検討候補がありません。<br>「候補を追加」ボタンから気になるサービスを登録しましょう！'
-        : 'このステータスの候補はありません'}
-    </div>`;
-    return;
-  }
-
-  const priorityOrder = { high: 0, mid: 1, low: 2 };
-  const sorted = [...filtered].sort((a,b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
-
-  grid.innerHTML = sorted.map(c => {
-    const days = daysUntil(c.trial_end);
-    const trialAlert = c.trial && c.trial_end && days !== null
-      ? (days <= 0
-          ? `<span class="trial-alert">⚠️ トライアル期限切れ</span>`
-          : days <= 7
-            ? `<span class="trial-alert">⚠️ トライアル残り ${days}日</span>`
-            : `<span class="trial-alert" style="background:#ecfdf5;color:#059669;">✅ トライアル中 残り${days}日</span>`)
-      : '';
-
-    const statusActions = {
-      pending: `
-        <button class="cand-btn cand-trial-btn" onclick="setCandStatus('${c.id}','trial')">試用開始</button>
-        <button class="cand-btn cand-hold" onclick="setCandStatus('${c.id}','hold')">保留</button>
-        <button class="cand-btn cand-pass" onclick="setCandStatus('${c.id}','pass')">見送り</button>`,
-      trial: `
-        <button class="cand-btn cand-hold" onclick="setCandStatus('${c.id}','pending')">検討中に戻す</button>
-        <button class="cand-btn cand-pass" onclick="setCandStatus('${c.id}','pass')">見送り</button>`,
-      hold: `
-        <button class="cand-btn cand-trial-btn" onclick="setCandStatus('${c.id}','pending')">検討再開</button>
-        <button class="cand-btn cand-pass" onclick="setCandStatus('${c.id}','pass')">見送り</button>`,
-      pass: `
-        <button class="cand-btn cand-trial-btn" onclick="setCandStatus('${c.id}','pending')">検討再開</button>`,
-    };
-
-    const showPromote = c.status !== 'pass';
-
-    return `
-    <div class="cand-card status-${c.status}">
-      <div class="cand-top">
-        <div class="cand-info">
-          <div class="cand-name">${escHtml(c.name)}</div>
-          <div class="cand-cat">${CAT_CONFIG[c.cat]?.emoji||''} ${CAT_CONFIG[c.cat]?.label||c.cat}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="cand-cost">${fmt(c.est_cost)}<span class="cand-cost-lbl">/月</span></div>
-          <div style="font-size:10px;color:#aaa;">年間 ${fmt(c.est_cost*12)}</div>
-        </div>
-      </div>
-      <div class="cand-tags">
-        <span class="tag tag-priority-${c.priority}">${PRIORITY_LABELS[c.priority]}</span>
-        <span class="tag tag-status-${c.status}">${STATUS_LABELS[c.status]}</span>
-        ${c.trial ? '<span class="tag tag-trial">無料トライアルあり</span>' : ''}
-        ${trialAlert}
-      </div>
-      ${c.reason ? `<div class="cand-reason">💬 ${escHtml(c.reason)}</div>` : ''}
-      ${c.memo   ? `<div class="cand-memo">📝 ${escHtml(c.memo)}</div>` : ''}
-      <div class="cand-actions">
-        <button class="cand-btn cand-edit" onclick="openCandModalEdit('${c.id}')">編集</button>
-        <button class="cand-btn cand-delete" onclick="deleteCand('${c.id}')">削除</button>
-        ${statusActions[c.status]||''}
-        ${showPromote ? `<button class="cand-btn cand-promote" onclick="promoteCand('${c.id}')">契約する →</button>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function setCandFilter(st) {
-  candFilter = st;
-  document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('sel'));
-  document.querySelector(`.status-tab[data-st="${st}"]`).classList.add('sel');
-  renderCandidates();
-}
-
-async function setCandStatus(id, status) {
-  try {
-    await dbUpdateCand(id, { status });
-    const c = candidates.find(x => x.id === id);
-    if (c) c.status = status;
-    showToast('✅ ステータスを更新しました');
-    renderAll();
-  } catch(e) {
-    showToast('❗ 更新に失敗しました: ' + e.message);
-  }
-}
-
-// 検討候補 → サブスク昇格
-async function promoteCand(id) {
-  const c = candidates.find(x => x.id === id);
-  if (!c) return;
-  if (!confirm(`「${c.name}」を契約済みサブスクに追加しますか？\n検討リストからは削除されます。`)) return;
-  try {
-    const subsObj = {
-      name: c.name, cost: c.est_cost, cat: c.cat,
-      purpose: c.reason || '',
-      roi: 'mid', freq: 55,
-    };
-    const newRow = await dbInsert(subsObj);
-    subs.push({ id: newRow.id, ...subsObj });
-    await dbDeleteCand(id);
-    candidates = candidates.filter(x => x.id !== id);
-    showToast('🎉 「' + c.name + '」を契約済みに追加しました！');
-    renderAll();
-  } catch(e) {
-    showToast('❗ 昇格に失敗しました: ' + e.message);
-  }
-}
-
-async function deleteCand(id) {
-  if (!confirm('この候補を削除しますか？')) return;
-  try {
-    await dbDeleteCand(id);
-    candidates = candidates.filter(x => x.id !== id);
-    showToast('🗑️ 削除しました');
-    renderAll();
-  } catch(e) {
-    showToast('❗ 削除に失敗しました: ' + e.message);
-  }
-}
-
-// ===== CANDIDATE MODAL =====
-function toggleTrialDate() {
-  const hasTrial  = document.getElementById('cf-trial').value === 'true';
-  const isTrial   = document.getElementById('cf-status').value === 'trial';
-  document.getElementById('trial-date-group').style.display = (hasTrial || isTrial) ? '' : 'none';
-}
-
-function openCandModal() {
-  document.getElementById('cand-modal-title').textContent = '⭐ 検討候補を追加';
-  document.getElementById('cand-edit-id').value = '';
-  document.getElementById('cf-name').value = '';
-  document.getElementById('cf-cost').value = '';
-  document.getElementById('cf-cat').value = 'work';
-  document.getElementById('cf-reason').value = '';
-  document.getElementById('cf-priority').value = 'mid';
-  document.getElementById('cf-status').value = 'pending';
-  document.getElementById('cf-trial').value = 'false';
-  document.getElementById('cf-trial-end').value = '';
-  document.getElementById('cf-memo').value = '';
-  toggleTrialDate();
-  document.getElementById('cand-modal').classList.add('open');
-}
-
-function openCandModalEdit(id) {
-  const c = candidates.find(x => x.id === id);
-  if (!c) return;
-  document.getElementById('cand-modal-title').textContent = '✏️ 検討候補を編集';
-  document.getElementById('cand-edit-id').value = id;
-  document.getElementById('cf-name').value = c.name;
-  document.getElementById('cf-cost').value = c.est_cost;
-  document.getElementById('cf-cat').value = c.cat;
-  document.getElementById('cf-reason').value = c.reason;
-  document.getElementById('cf-priority').value = c.priority;
-  document.getElementById('cf-status').value = c.status;
-  document.getElementById('cf-trial').value = c.trial ? 'true' : 'false';
-  document.getElementById('cf-trial-end').value = c.trial_end || '';
-  document.getElementById('cf-memo').value = c.memo;
-  toggleTrialDate();
-  document.getElementById('cand-modal').classList.add('open');
-}
-
-function closeCandModal() { document.getElementById('cand-modal').classList.remove('open'); }
-function closeCandModalOutside(e) { if (e.target.id === 'cand-modal') closeCandModal(); }
-
-async function saveCand() {
-  const name = document.getElementById('cf-name').value.trim();
-  const cost = parseInt(document.getElementById('cf-cost').value) || 0;
-  if (!name || !cost) { showToast('❗ サービス名と想定月額を入力してください'); return; }
-
-  const editId = document.getElementById('cand-edit-id').value;
-  const hasTrial = document.getElementById('cf-trial').value === 'true';
-  const trialEnd = document.getElementById('cf-trial-end').value || null;
-  const obj = {
-    name, est_cost: cost,
-    cat:       document.getElementById('cf-cat').value,
-    reason:    document.getElementById('cf-reason').value.trim(),
-    priority:  document.getElementById('cf-priority').value,
-    status:    document.getElementById('cf-status').value,
-    trial:     hasTrial,
-    trial_end: (hasTrial || document.getElementById('cf-status').value === 'trial') ? trialEnd : null,
-    memo:      document.getElementById('cf-memo').value.trim(),
-  };
-
-  const btn = document.getElementById('cand-save-btn');
-  btn.disabled = true; btn.textContent = '保存中...';
-  try {
-    if (editId) {
-      await dbUpdateCand(editId, obj);
-      const idx = candidates.findIndex(x => x.id === editId);
-      if (idx >= 0) candidates[idx] = { ...candidates[idx], ...obj };
-      showToast('✅ 更新しました');
-    } else {
-      const newRow = await dbInsertCand(obj);
-      candidates.push({ id: newRow.id, ...obj });
-      showToast('✅ 候補を追加しました');
-    }
-    closeCandModal();
-    renderAll();
-  } catch(e) {
-    showToast('❗ 保存に失敗しました: ' + e.message);
-  } finally {
-    btn.disabled = false; btn.textContent = '保存する';
-  }
-}
-
 // ===== MODAL =====
 function openModal(cat) {
   document.getElementById('modal-title').textContent = '✨ サブスクを追加';
@@ -1412,7 +892,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  const map = {dashboard:0, list:1, review:2, candidates:3};
+  const map = {dashboard:0, list:1, review:2};
   document.querySelectorAll('.nav-tab')[map[id]]?.classList.add('active');
   renderAll();
 }
