@@ -786,7 +786,8 @@ sb.auth.onAuthStateChange(async (event, session) => {
     document.getElementById('auth-overlay').classList.add('hidden');
     showLoading(true, 'データを読み込み中...');
     try {
-      await Promise.all([loadSubs(), loadCandidates()]);
+      await loadSubs();
+      await loadCandidates();
     } catch(e) {
       console.error('load failed:', e);
     } finally {
